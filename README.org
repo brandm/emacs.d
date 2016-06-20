@@ -1,2 +1,76 @@
-* emacs.d
-An Emacs setup with lazy loading
+* Summary
+
+This is an Emacs setup with as few ~(require 'foo)~ as possible. It uses
+lazy loading in order to not slow down the initial Emacs startup. Loading
+and setting up of the feature is postponed to when it is actually needed the
+first time. At that time there is a log to the messages buffer for learning
+purposes.
+
+* Usage example
+
+#+BEGIN_SRC shell :eval no
+  $ emacs -Q -l /foo/emacs-setup/main.el
+#+END_SRC
+
+If you use the Colemak keyboard layout and Viper mode:
+#+BEGIN_SRC shell :eval no
+  $ emacs -Q --eval '(setq kbd-layout "Colemak")' -l /foo/emacs-setup/main.el
+#+END_SRC
+
+The defcustom for the location of the external Emacs packages are in
+~base-definitions.el~.
+
+- http://en.wikipedia.org/wiki/Colemak
+
+- http://colemak.com
+
+* Design rationales
+** Lazy loading
+
+The function *~ext-pkg~* defined in the file ~base-definitions.el~ prepares
+the ~load-path~ and optionally the ~autoload~ and ~auto-mode-alist~ for lazy
+feature loading of external Emacs packages. See the calls to ~ext-pkg~ in
+~lazy-load-external.el~ for the flexibility for the patterns of the third
+argument.
+
+The function *~with-eval-after-load~* prepares the optional setup of the
+feature for running once at feature load time. Add only a wrapper function
+~setup-feature-foo~ to ~with-eval-after-load~ in order to keep the value of
+the variable ~after-load-alist~ uncluttered and informative.
+
+The function *~add-hook~* prepares the optional setup of the the buffer
+local settings for running each time when a buffer is opened in the
+corresponding major mode that processes the mode hook. Add only a wrapper
+function ~setup-buffer-foo~ to ~add-hook~ in order to keep the value of the
+buffer hook uncluttered and informative.
+
+** Tracking of feature loading
+
+During this Emacs setup phase when the lazy loading is prepared the function
+~provide~ is adviced to stop the setup with an error. At the end of the
+setup the function ~provide~ is adviced to just report without error every
+provided feature at its load time after the setup.
+
+The error is to to track unintended ~provide~ of a feature which means it is
+loaded too early instead of lazy loaded somewhen after the setup. The report
+of ~provide~ is to get an impression of which features are loaded and when.
+
+* Background and motivation
+
+When I started with Emacs in 2000 as a beginner I took every ~(require
+'foo)~ into my setup as if it were meant literally and there would be no
+other way to load a package. I became comfortable with Emacs Lisp quickly
+and added more and more configuration and functionality. Still using
+~(require 'foo)~ kept me away from realizing how the setup tangled more and
+more with for example the dependencies of local keymaps. Only after some
+intermediate steps I got the whole picture with ~autoload~,
+~auto-mode-alist~, ~with-eval-after-load~ and mode hooks to untangle the
+setup. The code here is only the part that is already cleaned up. The bigger
+part with the old mess is not yet ready to be moved to here.
+
+* File config :ARCHIVE:noexport:
+
+: Local Variables:
+:   coding: us-ascii-unix
+:   fill-column: 76
+: End:
