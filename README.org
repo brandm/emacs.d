@@ -68,9 +68,9 @@ intermediate steps I got the whole picture with ~autoload~,
 setup. The code here is only the part that is already cleaned up. The bigger
 part with the old mess is not yet ready to be moved to here.
 
-* File config :ARCHIVE:noexport:
+# * File config :ARCHIVE:noexport:
 
-: Local Variables:
-:   coding: us-ascii-unix
-:   fill-column: 76
-: End:
+# Local Variables:
+#   coding: us-ascii-unix
+#   fill-column: 76
+# End:
