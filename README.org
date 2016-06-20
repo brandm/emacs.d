@@ -1,2 +1,2 @@
-# emacs.d
+* emacs.d
 An Emacs setup with lazy loading
