@@ -17,32 +17,32 @@ If you use the Colemak keyboard layout and Viper mode:
   $ emacs -Q --eval '(setq kbd-layout "Colemak")' -l /foo/emacs-setup/main.el
 #+END_SRC
 
-The defcustom for the location of the external Emacs packages are in
-~base-definitions.el~.
-
 - http://en.wikipedia.org/wiki/Colemak
 
 - http://colemak.com
 
+The defcustom for the location of the external Emacs packages are in
+~base-definitions.el~.
+
 * Design rationales
 ** Lazy loading
 
-The function *~ext-pkg~* defined in the file ~base-definitions.el~ prepares
+The function *ext-pkg* defined in the file ~base-definitions.el~ prepares
 the ~load-path~ and optionally the ~autoload~ and ~auto-mode-alist~ for lazy
 feature loading of external Emacs packages. See the calls to ~ext-pkg~ in
 ~lazy-load-external.el~ for the flexibility for the patterns of the third
 argument.
 
-The function *~with-eval-after-load~* prepares the optional setup of the
+The function *with-eval-after-load* prepares the optional setup of the
 feature for running once at feature load time. Add only a wrapper function
 ~setup-feature-foo~ to ~with-eval-after-load~ in order to keep the value of
 the variable ~after-load-alist~ uncluttered and informative.
 
-The function *~add-hook~* prepares the optional setup of the the buffer
-local settings for running each time when a buffer is opened in the
-corresponding major mode that processes the mode hook. Add only a wrapper
-function ~setup-buffer-foo~ to ~add-hook~ in order to keep the value of the
-buffer hook uncluttered and informative.
+The function *add-hook* prepares the optional setup of the the buffer local
+settings for running each time when a buffer is opened in the corresponding
+major mode that processes the mode hook. Add only a wrapper function
+~setup-buffer-foo~ to ~add-hook~ in order to keep the value of the buffer
+hook uncluttered and informative.
 
 ** Tracking of feature loading
 
