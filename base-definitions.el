@@ -5,20 +5,6 @@
 ;;   - orgstruct-mode supported: On ";; *"-lines use TAB, S-TAB, C-TAB etc.
 ;;   - This file contains the base definitions.
 
-;; * Locations, to be configured
-;;   - Allow prior `setq'.
-;;   - `getenv' for temporary reconfig from shell environment variable.
-(defcustom loc-emacs-pkg (let ((dir (getenv "loc_emacs_pkg")))
-                           (if dir dir "~/c/etc/emacs/pkg"))
-  "The directory that contains some single file packages.")
-(defcustom loc-emacs-vc (let ((dir (getenv "loc_emacs_vc")))
-                          (if dir dir "~/c/etc/emacs/vc-"))
-  "The directory that contains one directory per package.")
-;; Check existence of locations.
-(mapc (lambda (dir) (unless (file-readable-p dir)
-                      (user-error "ERR: Missing dir: %s" dir)))
-      (list loc-emacs-pkg loc-emacs-vc))
-
 ;; * Lazy loading of external packages
 (defun ext-pkg (dir &optional file func-or-exts-with-funcs)
   "load-path and auto-mode-alist/`autoload' for external packages.

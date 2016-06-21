@@ -12,7 +12,22 @@
 (when (eq system-type 'darwin)
   (setq-default ns-command-modifier 'meta  ; Key "command": Emacs Meta
                 ns-option-modifier 'none)) ; Key "option": Insert AltGr char
-;; Tracking of feature loading.
+
+;; * Locations, to be configured
+;;   - Allow prior `setq'.
+;;   - `getenv' for temporary reconfig from shell environment variable.
+(defcustom loc-emacs-pkg (let ((dir (getenv "loc_emacs_pkg")))
+                           (if dir dir "~/c/etc/emacs/pkg"))
+  "The directory that contains some single file packages.")
+(defcustom loc-emacs-vc (let ((dir (getenv "loc_emacs_vc")))
+                          (if dir dir "~/c/etc/emacs/vc-"))
+  "The directory that contains one directory per package.")
+;; Check existence of locations.
+(mapc (lambda (dir) (unless (file-readable-p dir)
+                      (user-error "ERR: Missing dir: %s" dir)))
+      (list loc-emacs-pkg loc-emacs-vc))
+
+;; * Tracking of feature loading
 (defun load-err () (funcall (if t 'error 'message) ; t: normal, nil: debug
                             "ERR: Too early loaded feature %S" feature))
 (defun load-inf () (message "INF: Loaded feature %S" feature))
@@ -27,10 +42,11 @@
 ;; * Lazy feature loading
 ;;   - If a `provide' occurs already now then stop the setup with an error.
 (let ((provide-advice 'load-err))
-  (load-file "~/c/etc/emacs/cfg/emacs-setup/base-definitions.el")
-  (load-file "~/c/etc/emacs/cfg/emacs-setup/lazy-load-external.el")
-  (load-file "~/c/etc/emacs/cfg/emacs-setup/lazy-load-internal-misc.el")
-  (load-file "~/c/etc/emacs/cfg/emacs-setup/lazy-load-internal-viper.el"))
+  (mapc (lambda (file) (load-file (concat loc-emacs-vc "/emacs.d/" file)))
+        '("base-definitions.el"
+          "lazy-load-external.el"
+          "lazy-load-internal-misc.el"
+          "lazy-load-internal-viper.el")))
 
 ;; * Non-lazy feature loading for finishing
 (when (< emacs-major-version 25) (require 'eldoc)) ; Default in Emacs 25.1
