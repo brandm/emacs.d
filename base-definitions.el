@@ -29,24 +29,25 @@ extension regexp and its function or optionally several cons in a list."
   ;; - Note that this solution does not mutate func-or-exts-with-funcs.
   ;; - History
   ;;   - 2016-06-16 Factored out of `ext-pkg', use polymorphic recursion
-  (if (not (consp func-or-exts-with-funcs))
-      ;; Polymorphic recursion for parameter normalization, outer level:
-      ;; ~'func~ -> ~'(nil . func)~.
-      (auto-stuff file (cons nil func-or-exts-with-funcs))
-    (if (not (consp (car func-or-exts-with-funcs)))
-        ;; Polymorphic recursion for parameter normalization, inner level:
-        ;; ~'([...] . func)~ -> ~'(([...] . func))~.
-        (auto-stuff file (list func-or-exts-with-funcs))
-      ;; Parameter normalization done, ready for the actual work.
-      (mapc (lambda (extension-and-function)
-              (autoload
-                (cdr extension-and-function)
-                file
-                "Undocumented `autoload'."
-                t)
-              (when (car extension-and-function)
-                (add-to-list 'auto-mode-alist extension-and-function)))
-            func-or-exts-with-funcs))))
+  (cond ((not (consp func-or-exts-with-funcs))
+         ;; Polymorphic recursion for parameter normalization, outer level:
+         ;; ~'func~ -> ~'(nil . func)~.
+         (auto-stuff file (cons nil func-or-exts-with-funcs)))
+        ((not (consp (car func-or-exts-with-funcs)))
+         ;; Polymorphic recursion for parameter normalization, inner level:
+         ;; ~'([...] . func)~ -> ~'(([...] . func))~.
+         (auto-stuff file (list func-or-exts-with-funcs)))
+        (t
+         ;; Parameter normalization done, ready for the actual work.
+         (mapc (lambda (extension-and-function)
+                 (autoload
+                   (cdr extension-and-function)
+                   file
+                   "Undocumented `autoload'."
+                   t)
+                 (when (car extension-and-function)
+                   (add-to-list 'auto-mode-alist extension-and-function)))
+               func-or-exts-with-funcs))))
 
 ;; * File config :ARCHIVE:noexport:
 ;;   Local Variables:

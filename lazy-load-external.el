@@ -71,6 +71,14 @@
 ;;     - 2016-06-09 New
 (ext-pkg loc-emacs-pkg)
 
+;; * scala-mode2
+;;   - History
+;;     - 2016-07-05 New
+(ext-pkg
+ (concat loc-emacs-vc "/scala-mode2")
+ "scala-mode2"
+ '("\\.\\(scala\\|sbt\\)\\'" . scala-mode)) ; A `define-derived-mode'
+
 ;; * seq.el (library)
 ;;   - History
 ;;     - 2016-06-09 New

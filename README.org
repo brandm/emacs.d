@@ -3,18 +3,18 @@
 This is an Emacs setup with as few ~(require 'foo)~ as possible. It uses
 lazy loading in order to not slow down the initial Emacs startup. Loading
 and setting up of the feature is postponed to when it is actually needed the
-first time. At that time there is a log to the messages buffer for learning
+first time. There is a log to the messages buffer at that time for learning
 purposes.
 
 * Usage example
 
 #+BEGIN_SRC shell :eval no
-  $ emacs -Q -l /foo/emacs-setup/main.el
+  $ emacs -Q -l /foo/emacs.d/main.el
 #+END_SRC
 
 If you use the Colemak keyboard layout and Viper mode:
 #+BEGIN_SRC shell :eval no
-  $ emacs -Q --eval '(setq kbd-layout "Colemak")' -l /foo/emacs-setup/main.el
+  $ emacs -Q --eval '(setq kbd-layout "Colemak")' -l /foo/emacs.d/main.el
 #+END_SRC
 
 - http://en.wikipedia.org/wiki/Colemak
@@ -22,7 +22,7 @@ If you use the Colemak keyboard layout and Viper mode:
 - http://colemak.com
 
 The defcustom for the location of the external Emacs packages are in
-~base-definitions.el~.
+~main.el~.
 
 * Design rationales
 ** Lazy loading
@@ -39,7 +39,7 @@ feature for running once at feature load time. Add only a wrapper function
 the variable ~after-load-alist~ uncluttered and informative.
 
 The function *add-hook* prepares the optional setup of the the buffer local
-settings for running each time when a buffer is opened in the corresponding
+settings to be run each time when a buffer is opened in the corresponding
 major mode that processes the mode hook. Add only a wrapper function
 ~setup-buffer-foo~ to ~add-hook~ in order to keep the value of the buffer
 hook uncluttered and informative.
