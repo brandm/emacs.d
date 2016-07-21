@@ -40,7 +40,7 @@
   (setup-feature-extempore-mode))
 
 (defun setup-feature-extempore-mode ()
-  (message "INF: `setup-feature-extempore-mode'")
+  (msg "INF" "`setup-feature-extempore-mode'")
   (setq-default extempore-share-directory "/f/x/git/extempore"))
 
 ;; * Matlab mode (major mode)
@@ -59,7 +59,7 @@
   (setup-feature-paredit))
 
 (defun setup-feature-paredit ()
-  (message "INF: `setup-feature-paredit'")
+  (msg "INF" "`setup-feature-paredit'")
   (setq-default paredit-lighter " P") ; Was " Paredit" (leading space)
   ;; According to http://www.emacswiki.org/emacs-test/ParEdit
   (eldoc-add-command ; Updates the variable eldoc-message-commands
@@ -95,7 +95,7 @@
   (setup-feature-smartparens))
 
 (defun setup-feature-smartparens ()
-  (message "INF: `setup-feature-smartparens'")
+  (msg "INF" "`setup-feature-smartparens'")
   ;; Remove from pairs.
   (mapc (lambda (x) (sp-pair x nil :actions :rem)) '("'" "`"))
   (setq-default sp-highlight-pair-overlay nil)

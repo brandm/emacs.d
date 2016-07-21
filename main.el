@@ -13,6 +13,15 @@
   (setq-default ns-command-modifier 'meta  ; Key "command": Emacs Meta
                 ns-option-modifier 'none)) ; Key "option": Insert AltGr char
 
+;; * Init logging
+(let ((t0 (float-time)))
+  (defun msg (level-str format-str &rest args)
+    "`message' with time since start."
+    (message "%s %.3f: %s"
+             level-str
+             (- (float-time) t0)
+             (apply 'format format-str args))))
+
 ;; * Locations, to be configured
 ;;   - Allow prior `setq'.
 ;;   - `getenv' for temporary reconfig from shell environment variable.
@@ -30,8 +39,8 @@
 ;; * Tracking of feature loading
 (defun load-err () (funcall (if t 'error 'message) ; t: normal, nil: debug
                             "ERR: Too early loaded feature %S" feature))
-(defun load-inf () (message "INF: Loaded feature %S" feature))
-(defconst provide-advice 'load-inf)
+(defun load-inf () (msg "INF" "Loaded feature %S" feature))
+(defconst provide-advice #'load-inf)
 (defadvice provide (after advice-provide-after) (funcall provide-advice))
 (ad-activate 'provide)
 
@@ -40,8 +49,8 @@
 (kbd "") ; As a side effect load the features required for `kbd'
 
 ;; * Lazy feature loading
-;;   - If a `provide' occurs already now then stop the setup with an error.
-(let ((provide-advice 'load-err))
+;;   - If a `provide' occurs already here then stop the setup with an error.
+(let ((provide-advice #'load-err))
   (mapc (lambda (file) (load-file (concat loc-emacs-vc "/emacs.d/" file)))
         '("base-definitions.el"
           "lazy-load-external.el"
@@ -55,7 +64,7 @@
 (with-temp-buffer (require 'viper)) ; How to lazy load without `require'?
 
 ;; * Succeeded
-(message "INF: #### Loaded file %s" load-file-name)
+(msg "INF" "#### Loaded file %s" load-file-name)
 
 ;; * File config :ARCHIVE:noexport:
 ;;   Local Variables:

@@ -30,7 +30,7 @@
   (setup-feature-viper))
 
 (defun setup-feature-viper ()
-  (message "INF: `setup-feature-viper'")
+  (msg "INF" "`setup-feature-viper'")
   ;; After the feature "viper" has been provided to make
   ;; viper-want-ctl-h-help keep the value t.
   (setq-default viper-want-ctl-h-help t)
