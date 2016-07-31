@@ -3,8 +3,8 @@
 This is an Emacs setup with as few ~(require 'foo)~ as possible. It uses
 lazy loading in order to not slow down the initial Emacs startup. Loading
 and setting up of the feature is postponed to when it is actually needed the
-first time. There is a log to the messages buffer at that time for learning
-purposes.
+first time. When it is really loaded there is a log to the messages buffer
+for learning purposes.
 
 * Usage example
 
@@ -27,11 +27,11 @@ The defcustom for the location of the external Emacs packages are in
 * Design rationales
 ** Lazy loading
 
-The function *ext-pkg* defined in the file ~base-definitions.el~ prepares
-the ~load-path~ and optionally the ~autoload~ and ~auto-mode-alist~ for lazy
-feature loading of external Emacs packages. See the calls to ~ext-pkg~ in
-~lazy-load-external.el~ for the flexibility for the patterns of the third
-argument.
+The functions *load-path-add* and *auto-loads* defined in the file
+~base-definitions.el~ prepare the ~load-path~ and optionally the ~autoload~
+and ~auto-mode-alist~ for lazy feature loading of Emacs packages. See the
+calls to ~auto-loads~ in ~lazy-load-external.el~ for the flexibility for the
+patterns of the second argument.
 
 The function *with-eval-after-load* prepares the optional setup of the
 feature for running once at feature load time. Add only a wrapper function

@@ -5,38 +5,38 @@
 ;;   - orgstruct-mode supported: On ";; *"-lines use TAB, S-TAB, C-TAB etc.
 ;;   - This file contains the base definitions.
 
-;; * Lazy loading of external packages
-(defun ext-pkg (dir &optional file func-or-exts-with-funcs)
-  "load-path and auto-mode-alist/`autoload' for external packages.
-DIR: The directory to be added to load-path, DIR contains the FILE.
-FILE: The name of the file without .el to be loaded, contains the
-implementation(s) of the function(s) in FUNC-OR-EXTS-WITH-FUNCS.
-FUNC-OR-EXTS-WITH-FUNCS: Just a function or in a cons an optional file
-extension regexp and its function or optionally several cons in a list."
+;; * Lazy loading of packages
+(defun load-path-add (directory)
+  "If DIRECTORY exists add it to load-path and return non-nil.
+For internal packages that have to be redirected to an external
+directory or for external packages."
   ;; - History
   ;;   - 2016-06-15 New
-  ;;   - 2016-06-16 Factor out `auto-stuff'
-  (when (file-readable-p dir)
-    (add-to-list 'load-path dir)
-    (when (and file func-or-exts-with-funcs)
-      (auto-stuff file func-or-exts-with-funcs))))
+  ;;   - 2016-06-16 Factor out `auto-loads'
+  (when (file-readable-p directory) (add-to-list 'load-path directory)))
 
-(defun auto-stuff (file func-or-exts-with-funcs)
-  "auto-mode-alist and `autoload' for external packages.
-`auto-stuff' should not be used outside of `ext-pkg' because the
-~(add-to-list 'load-path dir)~ of `ext-pkg' is a prerequisite for
-`auto-stuff' and therefore `ext-pkg' has to be used instead."
+(defun auto-loads (file func-or-exts-with-funcs)
+  "auto-mode-alist and `autoload' for packages.
+
+FILE: The name of the file without .el to be loaded, contains the
+implementation(s) of the function(s) in FUNC-OR-EXTS-WITH-FUNCS.
+FUNC-OR-EXTS-WITH-FUNCS: Just a function or in a cons an optional
+file extension regexp and its function or optionally several cons
+in a list.
+
+Use ~(when (load-path-add DIRECTORY) (auto-loads FILE FUNC))~ for
+external packages because load-path is a prerequisite."
   ;; - Note that this solution does not mutate func-or-exts-with-funcs.
   ;; - History
-  ;;   - 2016-06-16 Factored out of `ext-pkg', use polymorphic recursion
+  ;;   - 2016-06-16 Factored out of `load-path-add', polymorphic recursion
   (cond ((not (consp func-or-exts-with-funcs))
          ;; Polymorphic recursion for parameter normalization, outer level:
          ;; ~'func~ -> ~'(nil . func)~.
-         (auto-stuff file (cons nil func-or-exts-with-funcs)))
+         (auto-loads file (cons nil func-or-exts-with-funcs)))
         ((not (consp (car func-or-exts-with-funcs)))
          ;; Polymorphic recursion for parameter normalization, inner level:
          ;; ~'([...] . func)~ -> ~'(([...] . func))~.
-         (auto-stuff file (list func-or-exts-with-funcs)))
+         (auto-loads file (list func-or-exts-with-funcs)))
         (t
          ;; Parameter normalization done, ready for the actual work.
          (mapc (lambda (extension-and-function)
