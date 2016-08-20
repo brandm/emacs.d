@@ -20,7 +20,7 @@
     (message "%s %.3f: %s"
              level-str
              (- (float-time) t0)
-             (apply 'format format-str args))))
+             (apply #'format format-str args))))
 
 ;; * Locations, to be configured
 ;;   - Allow prior `setq'.
@@ -36,7 +36,7 @@
                       (user-error "ERR: Missing dir: %s" dir)))
       (list loc-emacs-pkg loc-emacs-vc))
 
-;; * Tracking of feature loading
+;; * Logging of feature loading
 (defun load-err () (funcall (if t 'error 'message) ; t: normal, nil: debug
                             "ERR: Too early loaded feature %S" feature))
 (defun load-inf () (msg "INF" "Loaded feature %S" feature))

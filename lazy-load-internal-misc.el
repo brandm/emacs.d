@@ -7,9 +7,7 @@
 ;;     except Viper mode.
 
 ;; * C mode and C++ mode (major modes)
-(with-eval-after-load 'cc-mode ; File and `provide' for this comment not
-                               ; found yet.
-  (setup-feature-c-or-c++))
+(feature 'cc-mode 'setup-feature-c-or-c++)
 
 (defun setup-feature-c-or-c++ ()
   (msg "INF" "`setup-feature-c-or-c++'")
@@ -24,9 +22,7 @@
   (c-set-style "Stroustrup"))
 
 ;; * Diff mode (major mode)
-(with-eval-after-load 'diff-mode ; The `provide' in internal
-                                 ; lisp/vc/diff-mode.el
-  (setup-feature-diff-mode))
+(feature 'diff-mode 'setup-feature-diff-mode)
 
 (defun setup-feature-diff-mode ()
   (msg "INF" "`setup-feature-diff-mode'")

@@ -3,8 +3,8 @@
 This is an Emacs setup with as few ~(require 'foo)~ as possible. It uses
 lazy loading in order to not slow down the initial Emacs startup. Loading
 and setting up of the feature is postponed to when it is actually needed the
-first time. When it is really loaded there is a log to the messages buffer
-for learning purposes.
+first time. As soon as it is really loaded there is a log to the messages
+buffer for learning purposes.
 
 * Usage example
 
@@ -44,16 +44,20 @@ major mode that processes the mode hook. Add only a wrapper function
 ~setup-buffer-foo~ to ~add-hook~ in order to keep the value of the buffer
 hook uncluttered and informative.
 
-** Tracking of feature loading
+** Logging and tracking of feature loading
 
 During this Emacs setup phase when the lazy loading is prepared the function
 ~provide~ is adviced to stop the setup with an error. At the end of the
-setup the function ~provide~ is adviced to just report without error every
-provided feature at its load time after the setup.
+setup phase the function ~provide~ is adviced to just report without error
+every provided feature at its load time after the setup.
 
-The error is to to track unintended ~provide~ of a feature which means it is
+The error is to track unintended ~provide~ of a feature which means it is
 loaded too early instead of lazy loaded somewhen after the setup. The report
 of ~provide~ is to get an impression of which features are loaded and when.
+
+All features prepared for lazy loading through the function ~feature~ are
+also tracked to allow to enforce their loading by calling
+~require-lazy-features~ interactively at any time.
 
 * Background and motivation
 

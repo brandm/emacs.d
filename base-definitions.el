@@ -49,6 +49,34 @@ external packages because load-path is a prerequisite."
                    (add-to-list 'auto-mode-alist extension-and-function)))
                func-or-exts-with-funcs))))
 
+;; * Tracking and setup of lazy loaded features
+(defvar lazy-features nil
+  "Accumulated list of features that have been prepared for lazy loading.
+Can be used to force loading at the end of the setup or later")
+
+(defun feature (feature &optional setup-feature-function)
+  "Track FEATURE and optionally lazy call of SETUP-FEATURE-FUNCTION.
+The feature is the same as in the form ~(provide 'feature)~.
+Unlike `eval-after-load' no other type than feature for FEATURE.
+FEATURE has to be a list of parameters to be passed to `require'
+instead of just the feature when the `provide' and the file name
+of the feature do not match."
+  (add-to-list 'lazy-features feature t)
+  (with-eval-after-load (if (consp feature) (car feature) feature)
+    (when setup-feature-function (funcall setup-feature-function))))
+
+(defun require-lazy-features ()
+  "Force `require' of features that have been prepared with `feature'."
+  (interactive)
+  (msg "INF" "#### Requiring lazy loaded features...")
+  (mapc (lambda (feature)
+          (if (consp feature)
+              ;; `provide' and file name of the feature do not match.
+              (apply #'require feature)
+            (require feature)))
+        lazy-features)
+  (msg "INF" "#### Requiring lazy loaded features...done"))
+
 ;; * File config :ARCHIVE:noexport:
 ;;   Local Variables:
 ;;     coding: us-ascii-unix

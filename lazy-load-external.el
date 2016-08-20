@@ -9,7 +9,8 @@
 ;;   - History
 ;;     - 2016-06-09 New
 (when (load-path-add (concat loc-emacs-vc "/cider"))
-  (auto-loads "cider" 'cider-jack-in)) ; A `defun'
+  (auto-loads "cider" 'cider-jack-in) ; A `defun'
+  (feature 'cider))
 
 ;; * Clojure mode (major mode)
 ;;   - History
@@ -21,12 +22,14 @@
                 ("\\.cljc\\'" . clojurec-mode)
                 ("\\.cljx\\'" . clojurex-mode)
                 ("\\.cljs\\'" . clojurescript-mode)
-                ("\\(?:build\\|profile\\)\\.boot\\'" . clojure-mode))))
+                ("\\(?:build\\|profile\\)\\.boot\\'" . clojure-mode)))
+  (feature 'clojure-mode))
 
 ;; * dash.el (library)
 ;;   - History
 ;;     - 2016-06-09 New
-(load-path-add (concat loc-emacs-vc "/dash.el"))
+(when (load-path-add (concat loc-emacs-vc "/dash.el"))
+  (feature 'dash))
 
 ;; * Extempore mode (major mode)
 ;;   - History
@@ -34,9 +37,7 @@
 (when (load-path-add loc-emacs-pkg)
   (auto-loads "extempore"
               '("\\.xtm$" . extempore-mode)) ; A `define-derived-mode'
-  (with-eval-after-load 'extempore-mode ; The `provide' in external
-                                        ; extempore.el
-    (setup-feature-extempore-mode)))
+  (feature '(extempore-mode "extempore.el") 'setup-feature-extempore-mode))
 
 (defun setup-feature-extempore-mode ()
   (msg "INF" "`setup-feature-extempore-mode'")
@@ -45,8 +46,9 @@
 ;; * Matlab mode (major mode)
 (when (load-path-add loc-emacs-pkg)
   (auto-loads "matlab"
-              '(("\\.m$" . matlab-mode)     ; A `defun'
-                (nil     . matlab-shell)))) ; A `defun'
+              '(("\\.m$" . matlab-mode)    ; A `defun'
+                (nil     . matlab-shell))) ; A `defun'
+  (feature 'matlab))
 
 ;; * Paredit mode (minor mode)
 ;;   - History
@@ -55,8 +57,7 @@
   (when (load-path-add loc-emacs-pkg)
     (auto-loads "paredit" function)
     (global-set-key (kbd "C-c m p") function)
-    (with-eval-after-load 'paredit ; The `provide' in external paredit.el
-      (setup-feature-paredit))))
+    (feature 'paredit 'setup-feature-paredit)))
 
 (defun setup-feature-paredit ()
   (msg "INF" "`setup-feature-paredit'")
@@ -69,7 +70,8 @@
 ;; * queue (library)
 ;;   - History
 ;;     - 2016-06-09 New
-(load-path-add loc-emacs-pkg)
+(when (load-path-add loc-emacs-pkg)
+  (feature 'queue))
 
 ;; * scala-mode2
 ;;   - History
@@ -77,12 +79,14 @@
 (when (load-path-add (concat loc-emacs-vc "/scala-mode2"))
   (auto-loads
    "scala-mode2"
-   '("\\.\\(scala\\|sbt\\)\\'" . scala-mode))) ; A `define-derived-mode'
+   '("\\.\\(scala\\|sbt\\)\\'" . scala-mode)) ; A `define-derived-mode'
+  (feature 'scala-mode2))
 
 ;; * seq.el (library)
 ;;   - History
 ;;     - 2016-06-09 New
-(load-path-add (concat loc-emacs-vc "/seq.el"))
+(when (load-path-add (concat loc-emacs-vc "/seq.el"))
+  (feature 'seq))
 
 ;; * smartparens mode (minor mode)
 ;;   - History
@@ -91,9 +95,7 @@
   (when (load-path-add (concat loc-emacs-vc "/smartparens"))
     (auto-loads "smartparens" function)
     (global-set-key (kbd "C-c m s") function)
-    (with-eval-after-load 'smartparens ; The `provide' in external
-                                       ; smartparens.el
-      (setup-feature-smartparens))))
+    (feature 'smartparens 'setup-feature-smartparens)))
 
 (defun setup-feature-smartparens ()
   (msg "INF" "`setup-feature-smartparens'")
@@ -110,7 +112,8 @@
 ;; * spinner.el (library)
 ;;   - History
 ;;     - 2016-06-09 New
-(load-path-add (concat loc-emacs-vc "/spinner.el"))
+(when (load-path-add (concat loc-emacs-vc "/spinner.el"))
+  (feature 'spinner))
 
 ;; * File config :ARCHIVE:noexport:
 ;;   Local Variables:

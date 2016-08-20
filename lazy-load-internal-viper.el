@@ -25,9 +25,7 @@
  viper-mode t
  viper-inhibit-startup-message t
  viper-expert-level 3)
-(with-eval-after-load 'viper ; The `provide' in internal
-                             ; lisp/emulation/viper.el
-  (setup-feature-viper))
+(feature 'viper 'setup-feature-viper)
 
 (defun setup-feature-viper ()
   (msg "INF" "`setup-feature-viper'")
@@ -102,10 +100,9 @@
 Use ~(setq kbd-layout \"Colemak\")~ before loading this file if
 you use the Colemak keyboard layout.")
 
+;; Keep separate from `setup-feature-viper' defined in the other section.
 (when (equal kbd-layout "Colemak")
-  (with-eval-after-load 'viper ; The `provide' in internal
-                               ; lisp/emulation/viper.el
-    (pk-nj-for-viper-swap)))
+  (feature 'viper 'pk-nj-for-viper-swap))
 
 (defun pk-nj-for-viper-swap ()
   "Vim nnoremap p<->k and n<->j for the Colemak keyboard layout."
