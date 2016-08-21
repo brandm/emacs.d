@@ -16,7 +16,7 @@ directory or for external packages."
   (when (file-readable-p directory) (add-to-list 'load-path directory)))
 
 (defun auto-loads (file func-or-exts-with-funcs)
-  "auto-mode-alist and `autoload' for packages.
+  "`autoload' and auto-mode-alist for packages.
 
 FILE: The name of the file without .el to be loaded, contains the
 implementation(s) of the function(s) in FUNC-OR-EXTS-WITH-FUNCS.
