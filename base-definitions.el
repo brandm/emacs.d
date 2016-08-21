@@ -15,39 +15,28 @@ directory or for external packages."
   ;;   - 2016-06-16 Factor out `auto-loads'
   (when (file-readable-p directory) (add-to-list 'load-path directory)))
 
-(defun auto-loads (file func-or-exts-with-funcs)
+(defun auto-loads (file &optional &rest func-or-ext-with-func)
   "`autoload' and auto-mode-alist for packages.
 
 FILE: The name of the file without .el to be loaded, contains the
-implementation(s) of the function(s) in FUNC-OR-EXTS-WITH-FUNCS.
-FUNC-OR-EXTS-WITH-FUNCS: Just a function or in a cons an optional
-file extension regexp and its function or optionally several cons
-in a list.
+implementation of the function(s) in FUNC-OR-EXT-WITH-FUNC.
+FUNC-OR-EXT-WITH-FUNC: Just a function or a cons with a file
+extension regexp and a function.
 
-Use ~(when (load-path-add DIRECTORY) (auto-loads FILE FUNC))~ for
-external packages because load-path is a prerequisite."
-  ;; - Note that this solution does not mutate func-or-exts-with-funcs.
+For external packages use `auto-loads' conditionally with
+`load-path-add' because load-path is a prerequisite:
+~(when (load-path-add \"DIRECTORY\") (auto-loads [...]))~."
   ;; - History
-  ;;   - 2016-06-16 Factored out of `load-path-add', polymorphic recursion
-  (cond ((not (consp func-or-exts-with-funcs))
-         ;; Polymorphic recursion for parameter normalization, outer level:
-         ;; ~'func~ -> ~'(nil . func)~.
-         (auto-loads file (cons nil func-or-exts-with-funcs)))
-        ((not (consp (car func-or-exts-with-funcs)))
-         ;; Polymorphic recursion for parameter normalization, inner level:
-         ;; ~'([...] . func)~ -> ~'(([...] . func))~.
-         (auto-loads file (list func-or-exts-with-funcs)))
-        (t
-         ;; Parameter normalization done, ready for the actual work.
-         (mapc (lambda (extension-and-function)
-                 (autoload
-                   (cdr extension-and-function)
-                   file
-                   "Undocumented `autoload'."
-                   t)
-                 (when (car extension-and-function)
-                   (add-to-list 'auto-mode-alist extension-and-function)))
-               func-or-exts-with-funcs))))
+  ;;   - 2016-06-16 Factored out of `load-path-add'
+  (mapc (lambda (x)
+          (autoload
+            (if (consp x) (cdr x) x)
+            file
+            "Undocumented `autoload'."
+            t)
+          (when (consp x)
+            (add-to-list 'auto-mode-alist x)))
+        func-or-ext-with-func))
 
 ;; * Tracking and setup of lazy loaded features
 (defvar lazy-features nil

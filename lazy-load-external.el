@@ -9,7 +9,9 @@
 ;;   - History
 ;;     - 2016-06-09 New
 (when (load-path-add (concat loc-emacs-vc "/cider"))
-  (auto-loads "cider" 'cider-jack-in) ; A `defun'
+  (auto-loads "cider"
+              ;; They are all a `defun'.
+              'cider-connect 'cider-jack-in)
   (feature 'cider))
 
 ;; * Clojure mode (major mode)
@@ -17,12 +19,12 @@
 ;;     - 2016-05-09 New
 (when (load-path-add (concat loc-emacs-vc "/clojure-mode"))
   (auto-loads "clojure-mode"
-              ;; They are all a `define-derived-mode'
-              '(("\\.\\(clj\\|dtm\\|edn\\)\\'" . clojure-mode)
-                ("\\.cljc\\'" . clojurec-mode)
-                ("\\.cljx\\'" . clojurex-mode)
-                ("\\.cljs\\'" . clojurescript-mode)
-                ("\\(?:build\\|profile\\)\\.boot\\'" . clojure-mode)))
+              ;; They are all a `define-derived-mode'.
+              '("\\.\\(clj\\|dtm\\|edn\\)\\'" . clojure-mode)
+              '("\\.cljc\\'" . clojurec-mode)
+              '("\\.cljx\\'" . clojurex-mode)
+              '("\\.cljs\\'" . clojurescript-mode)
+              '("\\(?:build\\|profile\\)\\.boot\\'" . clojure-mode))
   (feature 'clojure-mode))
 
 ;; * dash.el (library)
@@ -46,8 +48,8 @@
 ;; * Matlab mode (major mode)
 (when (load-path-add loc-emacs-pkg)
   (auto-loads "matlab"
-              '(("\\.m$" . matlab-mode)    ; A `defun'
-                (nil     . matlab-shell))) ; A `defun'
+              ;; They are all a `defun'.
+              '("\\.m$" . matlab-mode) 'matlab-shell)
   (feature 'matlab))
 
 ;; * Paredit mode (minor mode)
