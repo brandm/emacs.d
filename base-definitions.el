@@ -7,7 +7,7 @@
 
 ;; * Lazy loading of packages
 (defun load-path-add (directory)
-  "If DIRECTORY exists add it to load-path and return non-nil.
+  "If DIRECTORY exists add it to `load-path' and return non-nil.
 For internal packages that have to be redirected to an external
 directory or for external packages."
   ;; - History
@@ -16,7 +16,7 @@ directory or for external packages."
   (when (file-readable-p directory) (add-to-list 'load-path directory)))
 
 (defun auto-loads (file &optional &rest func-or-ext-with-func)
-  "`autoload' and auto-mode-alist for packages.
+  "`autoload' and `auto-mode-alist' for packages.
 
 FILE: The name of the file without .el to be loaded, contains the
 implementation of the function(s) in FUNC-OR-EXT-WITH-FUNC.
@@ -24,7 +24,7 @@ FUNC-OR-EXT-WITH-FUNC: Just a function or a cons with a file
 extension regexp and a function.
 
 For external packages use `auto-loads' conditionally with
-`load-path-add' because load-path is a prerequisite:
+`load-path-add' because `load-path' is a prerequisite:
 ~(when (load-path-add \"DIRECTORY\") (auto-loads [...]))~."
   ;; - History
   ;;   - 2016-06-16 Factored out of `load-path-add'
@@ -47,15 +47,17 @@ Can be used to force loading at the end of the setup or later")
   "Track FEATURE and optionally lazy call of SETUP-FEATURE-FUNCTION.
 The feature is the same as in the form ~(provide 'feature)~.
 Unlike `eval-after-load' no other type than feature for FEATURE.
-FEATURE has to be a list of parameters to be passed to `require'
-instead of just the feature when the `provide' and the file name
-of the feature do not match."
+When the `provide' and the file name of the feature do not match
+FEATURE is a list with the feature and file name used by
+`require-lazy-features' as the first two arguments for
+`require'."
   (add-to-list 'lazy-features feature t)
-  (with-eval-after-load (if (consp feature) (car feature) feature)
-    (when setup-feature-function (funcall setup-feature-function))))
+  (when setup-feature-function
+    (with-eval-after-load (if (consp feature) (car feature) feature)
+      (funcall setup-feature-function))))
 
 (defun require-lazy-features ()
-  "Force `require' of features that have been prepared with `feature'."
+  "Force `require' of features prepared with `feature'."
   (interactive)
   (msg "INF" "#### Requiring lazy loaded features...")
   (mapc (lambda (feature)

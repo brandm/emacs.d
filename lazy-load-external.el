@@ -45,6 +45,17 @@
   (msg "INF" "`setup-feature-extempore-mode'")
   (setq-default extempore-share-directory "/f/x/git/extempore"))
 
+;; * live-py-mode (minor mode)
+;;   - History
+;;     - 2016-09-22 New
+(when (and (mapcar (lambda (p) (load-path-add (concat loc-emacs-vc p)))
+                   '("/live-py-plugin/emacs-live-py-mode"
+                     "/live-py-plugin/plugin/PySrc")))
+  (auto-loads "live-py-mode"
+              ;; A `define-minor-mode'
+              'live-py-mode)
+  (feature 'live-py-mode))
+
 ;; * Matlab mode (major mode)
 (when (load-path-add loc-emacs-pkg)
   (auto-loads "matlab"
