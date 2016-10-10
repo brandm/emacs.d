@@ -72,6 +72,12 @@ part with the old mess is not yet ready to be moved to here.
 
 * File config :ARCHIVE:noexport:
 
+For any possibly not so perfect exporter with an issue like
+http://github.com/wallyqs/org-ruby/issues/26
+#+EXCLUDE_TAGS: noexport
+Support the old name too.
+#+EXPORT_EXCLUDE_TAGS: noexport
+
 : Local Variables:
 :   coding: us-ascii-unix
 :   fill-column: 76
