@@ -2,9 +2,9 @@
 
 This is an Emacs setup with as few ~(require 'foo)~ as possible. It uses
 lazy loading in order to not slow down the initial Emacs startup. Loading
-and setting up of the feature is postponed to when it is actually needed the
-first time. As soon as it is really loaded there is a log to the messages
-buffer for learning purposes.
+and setting up of each feature is postponed to when it is actually needed
+the first time. As soon as it is really loaded there is a log to the
+messages buffer for learning purposes.
 
 * Usage example
 
@@ -71,6 +71,8 @@ setup. The code here is only the part that is already cleaned up. The bigger
 part with the old mess is not yet ready to be moved to here.
 
 * File config :ARCHIVE:noexport:
+
+Do not indent "#+" for compatibility with any exporter.
 
 For any possibly not so perfect exporter with an issue like
 http://github.com/wallyqs/org-ruby/issues/26
