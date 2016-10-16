@@ -45,6 +45,15 @@
   (msg "INF" "`setup-feature-extempore-mode'")
   (setq-default extempore-share-directory "/f/x/git/extempore"))
 
+;; * hy-mode (major mode)
+;;   - History
+;;     - 2016-10-10 New
+(when (load-path-add (concat loc-emacs-vc "/hy-mode"))
+  (auto-loads
+   "hy-mode"
+   '("\\.hy\\'" . hy-mode)) ; A `define-derived-mode'
+  (feature 'hy-mode))
+
 ;; * live-py-mode (minor mode)
 ;;   - History
 ;;     - 2016-09-22 New
