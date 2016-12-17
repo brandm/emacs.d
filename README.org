@@ -9,20 +9,18 @@ messages buffer for learning purposes.
 * Usage example
 
 #+BEGIN_SRC shell :eval no
-  $ emacs -Q -l /foo/emacs.d/main.el
+  emacs -Q \
+        --eval '(setq loc-emacs-pkg "/<dir_for_single-file-packages>/")' \
+        --eval '(setq loc-emacs-vc "/<dir_with_one_subdir_per_package>/")' \
+        -l /<dir_with_one_subdir_per_package>/emacs.d/main.el
 #+END_SRC
 
-If you use the Colemak keyboard layout and Viper mode:
-#+BEGIN_SRC shell :eval no
-  $ emacs -Q --eval '(setq kbd-layout "Colemak")' -l /foo/emacs.d/main.el
-#+END_SRC
+If you use the Colemak keyboard layout together with Viper mode like me add
+~--eval '(setq kbd-layout "Colemak")'~ after the ~-Q~.
 
 - http://en.wikipedia.org/wiki/Colemak
 
 - http://colemak.com
-
-The defcustom for the location of the external Emacs packages are in
-~main.el~.
 
 * Design rationales
 ** Lazy loading
@@ -62,13 +60,13 @@ also tracked to allow to enforce their loading by calling
 When I started with Emacs in 2000 as a beginner I took every ~(require
 'foo)~ into my setup as if it were meant literally and there would be no
 other way to load a package. I became comfortable with Emacs Lisp quickly
-and added more and more configuration and functionality. Still using
-~(require 'foo)~ kept me away from realizing how the setup entangled more
-and more with for example the dependencies of local keymaps. Only after some
-intermediate steps I got the whole picture with ~autoload~,
-~auto-mode-alist~, ~with-eval-after-load~ and mode hooks to untangle the
-setup. The code here is only the part that is already cleaned up. The bigger
-part with the old mess is not yet ready to be moved to here.
+and added more configuration and functionality. Still using ~(require 'foo)~
+kept me away from realizing how the setup entangled more and more with for
+example the dependencies of local keymaps. Only after some intermediate
+steps I got the whole picture with ~autoload~, ~auto-mode-alist~,
+~with-eval-after-load~ and mode hooks to untangle the setup. The code here
+is only the part that is already cleaned up. The bigger part with the old
+mess is not yet ready to be moved to here.
 
 * File config :ARCHIVE:noexport:
 

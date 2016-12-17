@@ -8,7 +8,7 @@
 ;; * CIDER mode (minor mode)
 ;;   - History
 ;;     - 2016-06-09 New
-(when (load-path-add (concat loc-emacs-vc "/cider"))
+(when (load-path-add (concat loc-emacs-vc "cider"))
   (auto-loads "cider"
               ;; They are all a `defun'.
               'cider-connect 'cider-jack-in)
@@ -17,7 +17,7 @@
 ;; * Clojure mode (major mode)
 ;;   - History
 ;;     - 2016-05-09 New
-(when (load-path-add (concat loc-emacs-vc "/clojure-mode"))
+(when (load-path-add (concat loc-emacs-vc "clojure-mode"))
   (auto-loads "clojure-mode"
               ;; They are all a `define-derived-mode'.
               '("\\.\\(clj\\|dtm\\|edn\\)\\'" . clojure-mode)
@@ -30,7 +30,7 @@
 ;; * dash.el (library)
 ;;   - History
 ;;     - 2016-06-09 New
-(when (load-path-add (concat loc-emacs-vc "/dash.el"))
+(when (load-path-add (concat loc-emacs-vc "dash.el"))
   (feature 'dash))
 
 ;; * Extempore mode (major mode)
@@ -48,7 +48,7 @@
 ;; * hy-mode (major mode)
 ;;   - History
 ;;     - 2016-10-10 New
-(when (load-path-add (concat loc-emacs-vc "/hy-mode"))
+(when (load-path-add (concat loc-emacs-vc "hy-mode"))
   (auto-loads
    "hy-mode"
    '("\\.hy\\'" . hy-mode)) ; A `define-derived-mode'
@@ -98,7 +98,7 @@
 ;; * scala-mode2
 ;;   - History
 ;;     - 2016-07-05 New
-(when (load-path-add (concat loc-emacs-vc "/scala-mode2"))
+(when (load-path-add (concat loc-emacs-vc "scala-mode2"))
   (auto-loads
    "scala-mode2"
    '("\\.\\(scala\\|sbt\\)\\'" . scala-mode)) ; A `define-derived-mode'
@@ -107,14 +107,14 @@
 ;; * seq.el (library)
 ;;   - History
 ;;     - 2016-06-09 New
-(when (load-path-add (concat loc-emacs-vc "/seq.el"))
+(when (load-path-add (concat loc-emacs-vc "seq.el"))
   (feature 'seq))
 
 ;; * smartparens mode (minor mode)
 ;;   - History
 ;;     - 2016-06-09 New
 (let ((function 'smartparens-mode)) ; A `define-minor-mode'
-  (when (load-path-add (concat loc-emacs-vc "/smartparens"))
+  (when (load-path-add (concat loc-emacs-vc "smartparens"))
     (auto-loads "smartparens" function)
     (global-set-key (kbd "C-c m s") function)
     (feature 'smartparens 'setup-feature-smartparens)))
@@ -134,7 +134,7 @@
 ;; * spinner.el (library)
 ;;   - History
 ;;     - 2016-06-09 New
-(when (load-path-add (concat loc-emacs-vc "/spinner.el"))
+(when (load-path-add (concat loc-emacs-vc "spinner.el"))
   (feature 'spinner))
 
 ;; * File config :ARCHIVE:noexport:

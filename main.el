@@ -22,16 +22,7 @@
              (- (float-time) t0)
              (apply #'format format-str args))))
 
-;; * Locations, to be configured
-;;   - Allow prior `setq'.
-;;   - `getenv' for temporary reconfig from shell environment variable.
-(defcustom loc-emacs-pkg (let ((dir (getenv "loc_emacs_pkg")))
-                           (if dir dir "~/c/etc/emacs/pkg"))
-  "The directory that contains some single file packages.")
-(defcustom loc-emacs-vc (let ((dir (getenv "loc_emacs_vc")))
-                          (if dir dir "~/c/etc/emacs/vc-"))
-  "The directory that contains one directory per package.")
-;; Check existence of locations.
+;; * Locations, to be set on Emacs command line
 (mapc (lambda (dir) (unless (file-readable-p dir)
                       (user-error "ERR: Missing dir: %s" dir)))
       (list loc-emacs-pkg loc-emacs-vc))
@@ -51,7 +42,7 @@
 ;; * Lazy feature loading
 ;;   - If a `provide' occurs already here then stop the setup with an error.
 (let ((provide-advice #'load-err))
-  (mapc (lambda (file) (load-file (concat loc-emacs-vc "/emacs.d/" file)))
+  (mapc (lambda (file) (load-file (concat loc-emacs-vc "emacs.d/" file)))
         '("base-definitions.el"
           "lazy-load-external.el"
           "lazy-load-internal-misc.el"
