@@ -63,7 +63,14 @@
   (auto-loads "live-py-mode"
               ;; A `define-minor-mode'
               'live-py-mode)
-  (feature 'live-py-mode))
+  (feature 'live-py-mode 'setup-feature-live-py))
+
+(defun setup-feature-live-py ()
+  (mapc (lambda (x) (define-key live-py-mode-map (kbd (car x)) (cadr x)))
+        '(("C-c d" nil)    ; Was `live-py-set-driver'
+          ("C-c w" nil)    ; Was `live-py-set-dir'
+          ("C-c p" nil)    ; Was `live-py-set-path'
+          ("C-c v" nil)))) ; Was `live-py-set-version'
 
 ;; * Matlab mode (major mode)
 (when (load-path-add loc-emacs-pkg)
@@ -124,12 +131,13 @@
   ;; Remove from pairs.
   (mapc (lambda (x) (sp-pair x nil :actions :rem)) '("'" "`"))
   (setq-default sp-highlight-pair-overlay nil)
-  (define-key smartparens-mode-map (kbd "C-c SPC") 'mark-sexp) ; No C-M-
-  ;; C-{, C-(, C-} and C-) were unused.
-  (define-key smartparens-mode-map (kbd "C-{") 'sp-backward-barf-sexp)
-  (define-key smartparens-mode-map (kbd "C-(") 'sp-backward-slurp-sexp)
-  (define-key smartparens-mode-map (kbd "C-}") 'sp-forward-barf-sexp)
-  (define-key smartparens-mode-map (kbd "C-)") 'sp-forward-slurp-sexp))
+  (mapc
+   (lambda (x) (define-key smartparens-mode-map (kbd (car x)) (cadr x)))
+   '(("C-c SPC" 'mark-sexp)                ; No C-M-
+     ("C-{"     'sp-backward-barf-sexp)    ; Was unused
+     ("C-("     'sp-backward-slurp-sexp)   ; Was unused
+     ("C-}"     'sp-forward-barf-sexp)     ; Was unused
+     ("C-)"     'sp-forward-slurp-sexp)))) ; Was unused
 
 ;; * spinner.el (library)
 ;;   - History
