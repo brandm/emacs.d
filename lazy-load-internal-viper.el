@@ -21,14 +21,13 @@
 ;;     - 2008-11-17 quit viper insert mode with C-c
 ;;     - 2008-04-07 Vim nnoremap p<->k and n<->j for Colemak keyboard layout
 ;;     - 2013-06-28 ESC or C-[ to quit insert-state (was customized C-c)
-(setq-default
- viper-mode t
- viper-inhibit-startup-message t
- viper-expert-level 3)
-(feature 'viper 'setup-feature-viper)
+(setq-default viper-mode t
+              viper-inhibit-startup-message t
+              viper-expert-level 3)
+(f-feature 'viper 'f-setup-feature-viper)
 
-(defun setup-feature-viper ()
-  (msg "INF" "`setup-feature-viper'")
+(defun f-setup-feature-viper ()
+  (f-msg "INF" "`f-setup-feature-viper'")
   ;; After the feature "viper" has been provided to make
   ;; viper-want-ctl-h-help keep the value t.
   (setq-default viper-want-ctl-h-help t)
@@ -40,11 +39,11 @@
                       ; `viper-toggle-search-style'.
           "C-c M-n")) ; Keep `cider-repl-set-ns' in Cider mode. Was
                       ; `viper-next-destructive-command'.
-  (define-key viper-vi-basic-map [remap open-line] 'open-line-for-viper)
+  (define-key viper-vi-basic-map [remap open-line] 'f-open-line-for-viper)
   (define-key viper-vi-global-user-map "gg" 'beginning-of-buffer)
   (define-key viper-insert-basic-map (kbd "C-[") 'viper-change-state-to-vi))
 
-(defun open-line-for-viper ()
+(defun f-open-line-for-viper ()
   "For Viper mode: Disable `open-line' except in Org table."
   ;; - History
   ;;   - 2014-11-27 New
@@ -95,16 +94,16 @@
 ;;     -   k /   j :: /usr/bin/less common keys.
 ;;     -   y /   e :: /usr/bin/less alternative keys (easier for Colemak).
 ;;     - C-p / C-n :: /usr/bin/less alternative keys (easier for Colemak).
-(defvar kbd-layout nil
+(defvar v-kbd-layout nil
   "The keyboard layout currently in use.
-Use ~(setq kbd-layout \"Colemak\")~ before loading this file if
+Use ~(setq v-kbd-layout \"Colemak\")~ before loading this file if
 you use the Colemak keyboard layout.")
 
-;; Keep separate from `setup-feature-viper' defined in the other section.
-(when (equal kbd-layout "Colemak")
-  (feature 'viper 'pk-nj-for-viper-swap))
+;; Keep separate from `f-setup-feature-viper' defined in the other section.
+(when (equal v-kbd-layout "Colemak")
+  (f-feature 'viper 'f-pk-nj-for-viper-swap))
 
-(defun pk-nj-for-viper-swap ()
+(defun f-pk-nj-for-viper-swap ()
   "Vim nnoremap p<->k and n<->j for the Colemak keyboard layout."
   (interactive)
   (define-key viper-vi-basic-map "p" 'viper-previous-line) ; Was "k"
@@ -112,8 +111,8 @@ you use the Colemak keyboard layout.")
   (define-key viper-vi-basic-map "n" 'viper-next-line)     ; Was "j"
   (define-key viper-vi-basic-map "j" 'viper-search-next))  ; Was "n"
 
-(defun pk-nj-for-viper-reset ()
-  "Reset of `pk-nj-for-viper-swap'."
+(defun f-pk-nj-for-viper-reset ()
+  "Reset of `f-pk-nj-for-viper-swap'."
   (interactive)
   (define-key viper-vi-basic-map "k" 'viper-previous-line)
   (define-key viper-vi-basic-map "p" 'viper-put-back)

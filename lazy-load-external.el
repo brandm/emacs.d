@@ -8,81 +8,79 @@
 ;; * CIDER mode (minor mode)
 ;;   - History
 ;;     - 2016-06-09 New
-(when (load-path-add (concat loc-emacs-vc "cider"))
-  (auto-loads "cider"
-              ;; They are all a `defun'.
-              'cider-connect 'cider-jack-in)
-  (feature 'cider))
+(when (f-load-path-add (concat v-loc-emacs-vc "cider"))
+  (f-auto-loads "cider"
+                'cider-connect 'cider-jack-in) ; They are all a `defun'
+  (f-feature 'cider))
 
 ;; * Clojure mode (major mode)
 ;;   - History
 ;;     - 2016-05-09 New
-(when (load-path-add (concat loc-emacs-vc "clojure-mode"))
-  (auto-loads "clojure-mode"
-              ;; They are all a `define-derived-mode'.
-              '("\\.\\(clj\\|dtm\\|edn\\)\\'" . clojure-mode)
-              '("\\.cljc\\'" . clojurec-mode)
-              '("\\.cljx\\'" . clojurex-mode)
-              '("\\.cljs\\'" . clojurescript-mode)
-              '("\\(?:build\\|profile\\)\\.boot\\'" . clojure-mode))
-  (feature 'clojure-mode))
+(when (f-load-path-add (concat v-loc-emacs-vc "clojure-mode"))
+  (f-auto-loads "clojure-mode"
+                ;; They are all a `define-derived-mode'.
+                '("\\.\\(clj\\|dtm\\|edn\\)\\'" . clojure-mode)
+                '("\\.cljc\\'" . clojurec-mode)
+                '("\\.cljx\\'" . clojurex-mode)
+                '("\\.cljs\\'" . clojurescript-mode)
+                '("\\(?:build\\|profile\\)\\.boot\\'" . clojure-mode))
+  (f-feature 'clojure-mode))
 
 ;; * dash.el (library)
 ;;   - History
 ;;     - 2016-06-09 New
-(when (load-path-add (concat loc-emacs-vc "dash.el"))
-  (feature 'dash))
+(when (f-load-path-add (concat v-loc-emacs-vc "dash.el"))
+  (f-feature 'dash))
 
 ;; * Extempore mode (major mode)
 ;;   - History
 ;;     - 2016-03-10 New
-(when (load-path-add loc-emacs-pkg)
-  (auto-loads "extempore"
-              '("\\.xtm$" . extempore-mode)) ; A `define-derived-mode'
-  (feature '(extempore-mode "extempore.el") 'setup-feature-extempore-mode))
+(when (f-load-path-add v-loc-emacs-pkg)
+  (f-auto-loads "extempore"
+                '("\\.xtm$" . extempore-mode)) ; A `define-derived-mode'
+  (f-feature '(extempore-mode "extempore.el")
+             'f-setup-feature-extempore-mode))
 
-(defun setup-feature-extempore-mode ()
-  (msg "INF" "`setup-feature-extempore-mode'")
+(defun f-setup-feature-extempore-mode ()
+  (f-msg "INF" "`f-setup-feature-extempore-mode'")
   (setq-default extempore-share-directory "/f/x/git/extempore"))
 
 ;; * hy-mode (major mode)
 ;;   - History
 ;;     - 2016-10-10 New
-(when (load-path-add (concat loc-emacs-vc "hy-mode"))
-  (auto-loads
-   "hy-mode"
-   '("\\.hy\\'" . hy-mode)) ; A `define-derived-mode'
-  (feature 'hy-mode))
+(when (f-load-path-add (concat v-loc-emacs-vc "hy-mode"))
+  (f-auto-loads "hy-mode"
+                '("\\.hy\\'" . hy-mode)) ; A `define-derived-mode'
+  (f-feature 'hy-mode))
 
 ;; * live-py-mode (minor mode)
 ;;   - History
 ;;     - 2016-09-22 New
-(when (and (mapcar (lambda (p) (load-path-add (concat loc-emacs-vc p)))
+(when (and (mapcar (lambda (p) (f-load-path-add (concat v-loc-emacs-vc p)))
                    '("/live-py-plugin/emacs-live-py-mode"
                      "/live-py-plugin/plugin/PySrc")))
-  (auto-loads "live-py-mode"
-              ;; A `define-minor-mode'
-              'live-py-mode)
-  (feature 'live-py-mode))
+  (f-auto-loads "live-py-mode"
+                'live-py-mode) ; A `define-minor-mode'
+  (f-feature 'live-py-mode))
 
 ;; * Matlab mode (major mode)
-(when (load-path-add loc-emacs-pkg)
-  (auto-loads "matlab"
-              ;; They are all a `defun'.
-              '("\\.m$" . matlab-mode) 'matlab-shell)
-  (feature 'matlab))
+(when (f-load-path-add v-loc-emacs-pkg)
+  (f-auto-loads "matlab"
+                ;; They are all a `defun'.
+                '("\\.m$" . matlab-mode) 'matlab-shell)
+  (f-feature 'matlab))
 
 ;; * Paredit mode (minor mode)
 ;;   - History
 ;;     - 2016-02-18 New
 (let ((function 'paredit-mode)) ; A `define-minor-mode'
-  (when (load-path-add loc-emacs-pkg)
-    (auto-loads "paredit" function)
+  (when (f-load-path-add v-loc-emacs-pkg)
+    (f-auto-loads "paredit" function)
     (global-set-key (kbd "C-c m p") function)
-    (feature 'paredit 'setup-feature-paredit)))
+    (f-feature 'paredit 'f-setup-feature-paredit)))
 
-(defun setup-feature-paredit ()
-  (msg "INF" "`setup-feature-paredit'")
+(defun f-setup-feature-paredit ()
+  (f-msg "INF" "`f-setup-feature-paredit'")
   (setq-default paredit-lighter " P") ; Was " Paredit" (leading space)
   ;; According to http://www.emacswiki.org/emacs-test/ParEdit
   (eldoc-add-command ; Updates the variable eldoc-message-commands
@@ -92,35 +90,35 @@
 ;; * queue (library)
 ;;   - History
 ;;     - 2016-06-09 New
-(when (load-path-add loc-emacs-pkg)
-  (feature 'queue))
+(when (f-load-path-add v-loc-emacs-pkg)
+  (f-feature 'queue))
 
 ;; * scala-mode2
 ;;   - History
 ;;     - 2016-07-05 New
-(when (load-path-add (concat loc-emacs-vc "scala-mode2"))
-  (auto-loads
-   "scala-mode2"
-   '("\\.\\(scala\\|sbt\\)\\'" . scala-mode)) ; A `define-derived-mode'
-  (feature 'scala-mode2))
+(when (f-load-path-add (concat v-loc-emacs-vc "scala-mode2"))
+  (f-auto-loads "scala-mode2"
+                ;; A `define-derived-mode'.
+                '("\\.\\(scala\\|sbt\\)\\'" . scala-mode))
+  (f-feature 'scala-mode2))
 
 ;; * seq.el (library)
 ;;   - History
 ;;     - 2016-06-09 New
-(when (load-path-add (concat loc-emacs-vc "seq.el"))
-  (feature 'seq))
+(when (f-load-path-add (concat v-loc-emacs-vc "seq.el"))
+  (f-feature 'seq))
 
 ;; * smartparens mode (minor mode)
 ;;   - History
 ;;     - 2016-06-09 New
 (let ((function 'smartparens-mode)) ; A `define-minor-mode'
-  (when (load-path-add (concat loc-emacs-vc "smartparens"))
-    (auto-loads "smartparens" function)
+  (when (f-load-path-add (concat v-loc-emacs-vc "smartparens"))
+    (f-auto-loads "smartparens" function)
     (global-set-key (kbd "C-c m s") function)
-    (feature 'smartparens 'setup-feature-smartparens)))
+    (f-feature 'smartparens 'f-setup-feature-smartparens)))
 
-(defun setup-feature-smartparens ()
-  (msg "INF" "`setup-feature-smartparens'")
+(defun f-setup-feature-smartparens ()
+  (f-msg "INF" "`f-setup-feature-smartparens'")
   ;; Remove from pairs.
   (mapc (lambda (x) (sp-pair x nil :actions :rem)) '("'" "`"))
   (setq-default sp-highlight-pair-overlay nil)
@@ -134,8 +132,8 @@
 ;; * spinner.el (library)
 ;;   - History
 ;;     - 2016-06-09 New
-(when (load-path-add (concat loc-emacs-vc "spinner.el"))
-  (feature 'spinner))
+(when (f-load-path-add (concat v-loc-emacs-vc "spinner.el"))
+  (f-feature 'spinner))
 
 ;; * File config :ARCHIVE:noexport:
 ;;   Local Variables:

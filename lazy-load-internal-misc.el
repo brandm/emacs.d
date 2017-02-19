@@ -7,25 +7,25 @@
 ;;     except Viper mode.
 
 ;; * C mode and C++ mode (major modes)
-(feature 'cc-mode 'setup-feature-c-or-c++)
+(f-feature 'cc-mode 'f-setup-feature-c-or-c++)
 
-(defun setup-feature-c-or-c++ ()
-  (msg "INF" "`setup-feature-c-or-c++'")
-  (add-hook 'c-mode-hook   'setup-buffer-c-or-c++)
-  (add-hook 'c++-mode-hook 'setup-buffer-c-or-c++))
+(defun f-setup-feature-c-or-c++ ()
+  (f-msg "INF" "`f-setup-feature-c-or-c++'")
+  (add-hook 'c-mode-hook   'f-setup-buffer-c-or-c++)
+  (add-hook 'c++-mode-hook 'f-setup-buffer-c-or-c++))
 
-(defun setup-buffer-c-or-c++ ()
-  (msg "INF" "`setup-buffer-c-or-c++'")
+(defun f-setup-buffer-c-or-c++ ()
+  (f-msg "INF" "`f-setup-buffer-c-or-c++'")
   ;; According to
   ;; http://lists.gnu.org/archive/html/emacs-devel/2005-12/msg00287.html
   ;; `c-set-style' has to be in setup buffer, not in setup feature.
   (c-set-style "Stroustrup"))
 
 ;; * Diff mode (major mode)
-(feature 'diff-mode 'setup-feature-diff-mode)
+(f-feature 'diff-mode 'f-setup-feature-diff-mode)
 
-(defun setup-feature-diff-mode ()
-  (msg "INF" "`setup-feature-diff-mode'")
+(defun f-setup-feature-diff-mode ()
+  (f-msg "INF" "`f-setup-feature-diff-mode'")
   ;; Set foreground colors to those used by git for colored diff. It makes
   ;; it much clearer to ediff two diff files.
   (custom-set-faces '(diff-added   ((t (:foreground "forest green"))) 'now)

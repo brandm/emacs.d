@@ -15,7 +15,7 @@
 
 ;; * Init logging
 (let ((t0 (float-time)))
-  (defun msg (level-str format-str &rest args)
+  (defun f-msg (level-str format-str &rest args)
     "`message' with time since start."
     (message "%s %.3f: %s"
              level-str
@@ -25,14 +25,14 @@
 ;; * Locations, to be set on Emacs command line
 (mapc (lambda (dir) (unless (file-readable-p dir)
                       (user-error "ERR: Missing dir: %s" dir)))
-      (list loc-emacs-pkg loc-emacs-vc))
+      (list v-loc-emacs-pkg v-loc-emacs-vc))
 
 ;; * Logging of feature loading
 (defun load-err () (funcall (if t 'error 'message) ; t: normal, nil: debug
                             "ERR: Too early loaded feature %S" feature))
-(defun load-inf () (msg "INF" "Loaded feature %S" feature))
-(defconst provide-advice #'load-inf)
-(defadvice provide (after advice-provide-after) (funcall provide-advice))
+(defun load-inf () (f-msg "INF" "Loaded feature %S" feature))
+(defconst v-provide-advice #'load-inf)
+(defadvice provide (after advice-provide-after) (funcall v-provide-advice))
 (ad-activate 'provide)
 
 ;; * Non-lazy feature loading for preparation
@@ -41,8 +41,8 @@
 
 ;; * Lazy feature loading
 ;;   - If a `provide' occurs already here then stop the setup with an error.
-(let ((provide-advice #'load-err))
-  (mapc (lambda (file) (load-file (concat loc-emacs-vc "emacs.d/" file)))
+(let ((v-provide-advice #'load-err))
+  (mapc (lambda (file) (load-file (concat v-loc-emacs-vc "emacs.d/" file)))
         '("base-definitions.el"
           "lazy-load-external.el"
           "lazy-load-internal-misc.el"
@@ -55,7 +55,7 @@
 (with-temp-buffer (require 'viper)) ; How to lazy load without `require'?
 
 ;; * Succeeded
-(msg "INF" "#### Loaded file %s" load-file-name)
+(f-msg "INF" "#### Loaded file %s" load-file-name)
 
 ;; * File config :ARCHIVE:noexport:
 ;;   Local Variables:

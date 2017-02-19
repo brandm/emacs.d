@@ -3,20 +3,20 @@
 This is an Emacs setup with as few ~(require 'foo)~ as possible. It uses
 lazy loading in order to not slow down the initial Emacs startup. Loading
 and setting up of each feature is postponed to when it is actually needed
-the first time. As soon as it is really loaded there is a log to the
+the first time. At the time when it is really loaded there is a log to the
 messages buffer for learning purposes.
 
 * Usage example
 
 #+BEGIN_SRC shell :eval no
   emacs -Q \
-        --eval '(setq loc-emacs-pkg "/<dir_for_single-file-packages>/")' \
-        --eval '(setq loc-emacs-vc "/<dir_with_one_subdir_per_package>/")' \
-        -l /<dir_with_one_subdir_per_package>/emacs.d/main.el
+        --eval '(setq v-loc-emacs-pkg "/<dir_for_single-file-packages>/" \
+                 v-loc-emacs-vc "/<dir_with_one_subdir_per_package>/")' \
+        -l '/<dir_with_one_subdir_per_package>/emacs.d/main.el'
 #+END_SRC
 
 If you use the Colemak keyboard layout together with Viper mode like me add
-~--eval '(setq kbd-layout "Colemak")'~ after the ~-Q~.
+~v-kbd-layout "Colemak"~ to the ~setq~ command above.
 
 - http://en.wikipedia.org/wiki/Colemak
 
@@ -25,11 +25,11 @@ If you use the Colemak keyboard layout together with Viper mode like me add
 * Design rationales
 ** Lazy loading
 
-The functions *load-path-add* and *auto-loads* defined in the file
+The functions *f-load-path-add* and *f-auto-loads* defined in the file
 ~base-definitions.el~ prepare the ~load-path~ and the ~autoload~ and
 ~auto-mode-alist~ for lazy feature loading of Emacs packages.
 
-The function *feature* prepares the optional setup of the feature for
+The function *f-feature* prepares the optional setup of the feature for
 running once at feature load time. Add only a wrapper function
 ~setup-feature-foo~ in order to keep the value of the variable
 ~after-load-alist~ uncluttered and informative.
@@ -51,9 +51,14 @@ The error is to track unintended ~provide~ of a feature which means it is
 loaded too early instead of lazy loaded sometime after the setup. The report
 of ~provide~ is to get an impression of which features are loaded and when.
 
-All features prepared for lazy loading through the function ~feature~ are
+All features prepared for lazy loading through the function ~f-feature~ are
 also tracked to allow to enforce their loading by calling
-~require-lazy-features~ interactively at any time.
+~f-require-lazy-features~ interactively at any time.
+
+** Naming convention
+
+To mimic a package prefix the functions have the prefix ~f-*~ and the
+variables etc. ~v-*~.
 
 * Background and motivation
 
@@ -70,12 +75,12 @@ mess is not yet ready to be moved to here.
 
 * File config :ARCHIVE:noexport:
 
-Do not indent "#+" for compatibility with any exporter.
+# Do not indent "#+" for compatibility with any exporter.
 
-For any possibly not so perfect exporter with an issue like
-http://github.com/wallyqs/org-ruby/issues/26
+# For any possibly not so perfect exporter with an issue like
+# http://github.com/wallyqs/org-ruby/issues/26
 #+EXCLUDE_TAGS: noexport
-Support the old name too.
+# Support the old name too.
 #+EXPORT_EXCLUDE_TAGS: noexport
 
 : Local Variables:
