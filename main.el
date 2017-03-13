@@ -28,11 +28,14 @@
       (list v-loc-emacs-pkg v-loc-emacs-vc))
 
 ;; * Logging of feature loading
-(defun load-err () (funcall (if t 'error 'message) ; t: normal, nil: debug
-                            "ERR: Too early loaded feature %S" feature))
-(defun load-inf () (f-msg "INF" "Loaded feature %S" feature))
+(defun load-err (feature)
+  (funcall (if t 'error 'message) ; t: normal, nil: debug
+           "ERR: Too early loaded feature %S" feature))
+(defun load-inf (feature)
+  (f-msg "INF" "Loaded feature %S" feature))
 (defconst v-provide-advice #'load-inf)
-(defadvice provide (after advice-provide-after) (funcall v-provide-advice))
+(defadvice provide (after advice-provide-after)
+  (funcall v-provide-advice feature))
 (ad-activate 'provide)
 
 ;; * Non-lazy feature loading for preparation

@@ -81,10 +81,10 @@
    'paredit-backward-delete
    'paredit-close-round))
 
-(let ((function 'paredit-mode)) ; A `define-minor-mode'
+(let ((func 'paredit-mode)) ; A `define-minor-mode'
   (when (f-load-path-add v-loc-emacs-pkg)
-    (f-auto-loads "paredit" function)
-    (global-set-key (kbd "C-c m p") function)
+    (f-auto-loads "paredit" func)
+    (global-set-key (kbd "C-c m p") func)
     (f-feature 'paredit 'f-setup-feature-paredit)))
 
 ;; * queue (library)
@@ -111,6 +111,9 @@
 ;; * smartparens mode (minor mode)
 ;;   - History
 ;;     - 2016-06-09 New
+(defvar smartparens-mode-map)
+(declare-function sp-pair "smartparens")
+
 (defun f-setup-feature-smartparens ()
   (f-msg "INF" "`f-setup-feature-smartparens'")
   ;; Remove from pairs.
@@ -123,10 +126,10 @@
   (define-key smartparens-mode-map (kbd "C-}") 'sp-forward-barf-sexp)
   (define-key smartparens-mode-map (kbd "C-)") 'sp-forward-slurp-sexp))
 
-(let ((function 'smartparens-mode)) ; A `define-minor-mode'
+(let ((func 'smartparens-mode)) ; A `define-minor-mode'
   (when (f-load-path-add (concat v-loc-emacs-vc "smartparens"))
-    (f-auto-loads "smartparens" function)
-    (global-set-key (kbd "C-c m s") function)
+    (f-auto-loads "smartparens" func)
+    (global-set-key (kbd "C-c m s") func)
     (f-feature 'smartparens 'f-setup-feature-smartparens)))
 
 ;; * spinner.el (library)

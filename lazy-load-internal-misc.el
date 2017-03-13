@@ -22,6 +22,8 @@
 (f-feature 'cc-mode 'f-setup-feature-c-or-c++)
 
 ;; * Diff mode (major mode)
+(defvar diff-mode-map)
+
 (defun f-setup-feature-diff-mode ()
   (f-msg "INF" "`f-setup-feature-diff-mode'")
   ;; Set foreground colors to those used by git for colored diff. It makes
