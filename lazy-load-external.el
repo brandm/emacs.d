@@ -56,9 +56,9 @@
 ;; * live-py-mode (minor mode)
 ;;   - History
 ;;     - 2016-09-22 New
-(when (and (mapcar (lambda (p) (f-load-path-add (concat v-loc-emacs-vc p)))
-                   '("/live-py-plugin/emacs-live-py-mode"
-                     "/live-py-plugin/plugin/PySrc")))
+(when (cl-every (lambda (p) (f-load-path-add (concat v-loc-emacs-vc p)))
+                '("/live-py-plugin/emacs-live-py-mode"
+                  "/live-py-plugin/plugin/PySrc"))
   (f-auto-loads "live-py-mode"
                 'live-py-mode) ; A `define-minor-mode'
   (f-feature 'live-py-mode))

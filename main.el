@@ -39,8 +39,10 @@
 (ad-activate 'provide)
 
 ;; * Non-lazy feature loading for preparation
-;;   - Load as few features as possible required for the setup.
-(kbd "") ; As a side effect load the features required for `kbd'
+;;   - As a side effect of calling some of the used functions load as few
+;;     features as possible required for the setup.
+(kbd "")
+(cl-every nil nil)
 
 ;; * Lazy feature loading
 ;;   - If a `provide' occurs already here then stop the setup with an error.
