@@ -35,15 +35,15 @@
 ;; * Extempore mode (major mode)
 ;;   - History
 ;;     - 2016-03-10 New
+(defun f-setup-feature-extempore-mode ()
+  (f-msg "INF" "`f-setup-feature-extempore-mode'")
+  (setq-default extempore-share-directory "/f/x/git/extempore"))
+
 (when (f-load-path-add v-loc-emacs-pkg)
   (f-auto-loads "extempore"
                 '("\\.xtm$" . extempore-mode)) ; A `define-derived-mode'
   (f-feature '(extempore-mode "extempore.el")
              'f-setup-feature-extempore-mode))
-
-(defun f-setup-feature-extempore-mode ()
-  (f-msg "INF" "`f-setup-feature-extempore-mode'")
-  (setq-default extempore-share-directory "/f/x/git/extempore"))
 
 ;; * hy-mode (major mode)
 ;;   - History
@@ -73,12 +73,6 @@
 ;; * Paredit mode (minor mode)
 ;;   - History
 ;;     - 2016-02-18 New
-(let ((function 'paredit-mode)) ; A `define-minor-mode'
-  (when (f-load-path-add v-loc-emacs-pkg)
-    (f-auto-loads "paredit" function)
-    (global-set-key (kbd "C-c m p") function)
-    (f-feature 'paredit 'f-setup-feature-paredit)))
-
 (defun f-setup-feature-paredit ()
   (f-msg "INF" "`f-setup-feature-paredit'")
   (setq-default paredit-lighter " P") ; Was " Paredit" (leading space)
@@ -86,6 +80,12 @@
   (eldoc-add-command ; Updates the variable eldoc-message-commands
    'paredit-backward-delete
    'paredit-close-round))
+
+(let ((function 'paredit-mode)) ; A `define-minor-mode'
+  (when (f-load-path-add v-loc-emacs-pkg)
+    (f-auto-loads "paredit" function)
+    (global-set-key (kbd "C-c m p") function)
+    (f-feature 'paredit 'f-setup-feature-paredit)))
 
 ;; * queue (library)
 ;;   - History
@@ -111,12 +111,6 @@
 ;; * smartparens mode (minor mode)
 ;;   - History
 ;;     - 2016-06-09 New
-(let ((function 'smartparens-mode)) ; A `define-minor-mode'
-  (when (f-load-path-add (concat v-loc-emacs-vc "smartparens"))
-    (f-auto-loads "smartparens" function)
-    (global-set-key (kbd "C-c m s") function)
-    (f-feature 'smartparens 'f-setup-feature-smartparens)))
-
 (defun f-setup-feature-smartparens ()
   (f-msg "INF" "`f-setup-feature-smartparens'")
   ;; Remove from pairs.
@@ -128,6 +122,12 @@
   (define-key smartparens-mode-map (kbd "C-(") 'sp-backward-slurp-sexp)
   (define-key smartparens-mode-map (kbd "C-}") 'sp-forward-barf-sexp)
   (define-key smartparens-mode-map (kbd "C-)") 'sp-forward-slurp-sexp))
+
+(let ((function 'smartparens-mode)) ; A `define-minor-mode'
+  (when (f-load-path-add (concat v-loc-emacs-vc "smartparens"))
+    (f-auto-loads "smartparens" function)
+    (global-set-key (kbd "C-c m s") function)
+    (f-feature 'smartparens 'f-setup-feature-smartparens)))
 
 ;; * spinner.el (library)
 ;;   - History

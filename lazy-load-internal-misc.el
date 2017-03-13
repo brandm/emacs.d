@@ -7,13 +7,6 @@
 ;;     except Viper mode.
 
 ;; * C mode and C++ mode (major modes)
-(f-feature 'cc-mode 'f-setup-feature-c-or-c++)
-
-(defun f-setup-feature-c-or-c++ ()
-  (f-msg "INF" "`f-setup-feature-c-or-c++'")
-  (add-hook 'c-mode-hook   'f-setup-buffer-c-or-c++)
-  (add-hook 'c++-mode-hook 'f-setup-buffer-c-or-c++))
-
 (defun f-setup-buffer-c-or-c++ ()
   (f-msg "INF" "`f-setup-buffer-c-or-c++'")
   ;; According to
@@ -21,9 +14,14 @@
   ;; `c-set-style' has to be in setup buffer, not in setup feature.
   (c-set-style "Stroustrup"))
 
-;; * Diff mode (major mode)
-(f-feature 'diff-mode 'f-setup-feature-diff-mode)
+(defun f-setup-feature-c-or-c++ ()
+  (f-msg "INF" "`f-setup-feature-c-or-c++'")
+  (add-hook 'c-mode-hook   'f-setup-buffer-c-or-c++)
+  (add-hook 'c++-mode-hook 'f-setup-buffer-c-or-c++))
 
+(f-feature 'cc-mode 'f-setup-feature-c-or-c++)
+
+;; * Diff mode (major mode)
 (defun f-setup-feature-diff-mode ()
   (f-msg "INF" "`f-setup-feature-diff-mode'")
   ;; Set foreground colors to those used by git for colored diff. It makes
@@ -36,6 +34,8 @@
   (define-key diff-mode-map (kbd "M-<down>" ) 'diff-file-next)
   (define-key diff-mode-map (kbd "M-<left>" ) 'diff-hunk-prev)
   (define-key diff-mode-map (kbd "M-<right>") 'diff-hunk-next))
+
+(f-feature 'diff-mode 'f-setup-feature-diff-mode)
 
 ;; * Eldoc mode (minor mode)
 (setq-default eldoc-minor-mode-string ; Also called "lighter"

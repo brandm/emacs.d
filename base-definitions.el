@@ -8,6 +8,7 @@
 ;; * Lazy loading of packages
 (defvar v-loc-emacs-pkg nil "Directory for single-file-packages.")
 (defvar v-loc-emacs-vc nil "Directory with one subdirectory per package.")
+
 (defun f-load-path-add (directory)
   "If DIRECTORY exists add it to `load-path' and return non-nil.
 For internal packages that have to be redirected to an external

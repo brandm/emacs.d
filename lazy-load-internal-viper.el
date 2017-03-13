@@ -21,10 +21,15 @@
 ;;     - 2008-11-17 quit viper insert mode with C-c
 ;;     - 2008-04-07 Vim nnoremap p<->k and n<->j for Colemak keyboard layout
 ;;     - 2013-06-28 ESC or C-[ to quit insert-state (was customized C-c)
-(setq-default viper-mode t
-              viper-inhibit-startup-message t
-              viper-expert-level 3)
-(f-feature 'viper 'f-setup-feature-viper)
+(defun f-open-line-for-viper ()
+  "For Viper mode: Disable `open-line' except in Org table."
+  ;; - History
+  ;;   - 2014-11-27 New
+  (interactive)
+  (if (and (eq major-mode 'org-mode) (org-at-table-p) org-special-ctrl-o)
+      ;; From `org-open-line' that remaps the keys for `open-line'.
+      (org-table-insert-row)
+    (user-error "ERR: Get used to \"O\" (S-o) to behave vi-compatible.")))
 
 (defun f-setup-feature-viper ()
   (f-msg "INF" "`f-setup-feature-viper'")
@@ -43,17 +48,14 @@
   (define-key viper-vi-global-user-map "gg" 'beginning-of-buffer)
   (define-key viper-insert-basic-map (kbd "C-[") 'viper-change-state-to-vi))
 
-(defun f-open-line-for-viper ()
-  "For Viper mode: Disable `open-line' except in Org table."
-  ;; - History
-  ;;   - 2014-11-27 New
-  (interactive)
-  (if (and (eq major-mode 'org-mode) (org-at-table-p) org-special-ctrl-o)
-      ;; From `org-open-line' that remaps the keys for `open-line'.
-      (org-table-insert-row)
-    (user-error "ERR: Get used to \"O\" (S-o) to behave vi-compatible.")))
+(setq-default viper-mode t
+              viper-inhibit-startup-message t
+              viper-expert-level 3)
+(f-feature 'viper 'f-setup-feature-viper)
 
 ;; * Colemak keyboard layout remapping
+;;   - Keep separate from `f-setup-feature-viper' defined in the other
+;;     section.
 ;;   - The following background about the choice to swap p<->k and n<->j
 ;;     uses these abbreviations:
 ;;     - PREV :: Move line up _by keeping the column_.
@@ -99,10 +101,6 @@
 Use ~(setq v-kbd-layout \"Colemak\")~ before loading this file if
 you use the Colemak keyboard layout.")
 
-;; Keep separate from `f-setup-feature-viper' defined in the other section.
-(when (equal v-kbd-layout "Colemak")
-  (f-feature 'viper 'f-pk-nj-for-viper-swap))
-
 (defun f-pk-nj-for-viper-swap ()
   "Vim nnoremap p<->k and n<->j for the Colemak keyboard layout."
   (interactive)
@@ -118,6 +116,9 @@ you use the Colemak keyboard layout.")
   (define-key viper-vi-basic-map "p" 'viper-put-back)
   (define-key viper-vi-basic-map "j" 'viper-next-line)
   (define-key viper-vi-basic-map "n" 'viper-search-next))
+
+(when (equal v-kbd-layout "Colemak")
+  (f-feature 'viper 'f-pk-nj-for-viper-swap))
 
 ;; * File config :ARCHIVE:noexport:
 ;;   Local Variables:
