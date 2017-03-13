@@ -61,6 +61,17 @@
 ;; Use C-c to quit incremental search with this to stay at match.
 (define-key isearch-mode-map (kbd "C-c") 'isearch-exit)
 
+;; * Python mode (major mode)
+;;   - History
+;;     - 2016-09-22 New
+(defvar python-mode-map)
+
+(defun f-setup-feature-python ()
+  (f-msg "INF" "`f-setup-feature-python'")
+  (define-key python-mode-map (kbd "C-c c") 'live-py-mode))
+
+(f-feature 'python 'f-setup-feature-python)
+
 ;; * Minibuffer
 ;; Move (not copy) M-p/M-n to C-p/C-n in order to avoid the Meta key.
 (mapc (lambda (key-func)

@@ -54,6 +54,7 @@
   (f-feature 'hy-mode))
 
 ;; * live-py-mode (minor mode)
+;;   - Keep in sync with `f-setup-feature-python'.
 ;;   - History
 ;;     - 2016-09-22 New
 (when (cl-every (lambda (p) (f-load-path-add (concat v-loc-emacs-vc p)))
