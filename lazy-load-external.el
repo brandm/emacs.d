@@ -117,14 +117,16 @@
 (defun f-setup-feature-smartparens ()
   (f-msg "INF" "`f-setup-feature-smartparens'")
   ;; Remove from pairs.
-  (mapc (lambda (x) (sp-pair x nil :actions :rem)) '("'" "`"))
+  (mapc (lambda (open) (sp-pair open nil :actions :rem)) '("'" "`"))
   (setq-default sp-highlight-pair-overlay nil)
-  (define-key smartparens-mode-map (kbd "C-c SPC") 'mark-sexp) ; No C-M-
-  ;; C-{, C-(, C-} and C-) were unused.
-  (define-key smartparens-mode-map (kbd "C-{") 'sp-backward-barf-sexp)
-  (define-key smartparens-mode-map (kbd "C-(") 'sp-backward-slurp-sexp)
-  (define-key smartparens-mode-map (kbd "C-}") 'sp-forward-barf-sexp)
-  (define-key smartparens-mode-map (kbd "C-)") 'sp-forward-slurp-sexp))
+  (mapc (lambda (key-func)
+          (define-key
+            smartparens-mode-map (kbd (car key-func)) (cadr key-func)))
+        '(("C-c SPC" mark-sexp)                ; No C-M-
+          ("C-{"     sp-backward-barf-sexp)    ; Was unused
+          ("C-("     sp-backward-slurp-sexp)   ; Was unused
+          ("C-}"     sp-forward-barf-sexp)     ; Was unused
+          ("C-)"     sp-forward-slurp-sexp)))) ; Was unused
 
 (let ((func 'smartparens-mode)) ; A `define-minor-mode'
   (when (f-load-path-add (concat v-loc-emacs-vc "smartparens"))

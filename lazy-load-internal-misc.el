@@ -16,8 +16,8 @@
 
 (defun f-setup-feature-c-or-c++ ()
   (f-msg "INF" "`f-setup-feature-c-or-c++'")
-  (add-hook 'c-mode-hook   'f-setup-buffer-c-or-c++)
-  (add-hook 'c++-mode-hook 'f-setup-buffer-c-or-c++))
+  (mapc (lambda (hook) (add-hook hook 'f-setup-buffer-c-or-c++))
+        '(c-mode-hook c++-mode-hook)))
 
 (f-feature 'cc-mode 'f-setup-feature-c-or-c++)
 
@@ -31,11 +31,12 @@
   (custom-set-faces '(diff-added   ((t (:foreground "forest green"))) 'now)
                     '(diff-removed ((t (:foreground "firebrick"   ))) 'now)
                     '(diff-context ((t (:foreground "black"       ))) 'now))
-  ;; All these were unused.
-  (define-key diff-mode-map (kbd "M-<up>"   ) 'diff-file-prev)
-  (define-key diff-mode-map (kbd "M-<down>" ) 'diff-file-next)
-  (define-key diff-mode-map (kbd "M-<left>" ) 'diff-hunk-prev)
-  (define-key diff-mode-map (kbd "M-<right>") 'diff-hunk-next))
+  (mapc (lambda (key-func)
+          (define-key diff-mode-map (kbd (car key-func)) (cadr key-func)))
+        '(("M-<up>"    diff-file-prev)    ; Was unused
+          ("M-<down>"  diff-file-next)    ; Was unused
+          ("M-<left>"  diff-hunk-prev)    ; Was unused
+          ("M-<right>" diff-hunk-next)))) ; Was unused
 
 (f-feature 'diff-mode 'f-setup-feature-diff-mode)
 
@@ -50,22 +51,25 @@
 ;;     and isearch-ring-retreat, later accesses are via
 ;;     minibuffer-local-isearch-map and previous-history-element (already
 ;;     C-p)
-;; Move (not copy) M-p/M-n to C-p/C-n in order to avoid the Meta key. C-p
-;; and C-n were exit isearch.
-(define-key isearch-mode-map (kbd "C-p") 'isearch-ring-retreat)
-(define-key isearch-mode-map (kbd "C-n") 'isearch-ring-advance)
-(define-key isearch-mode-map (kbd "M-p") nil)
-(define-key isearch-mode-map (kbd "M-n") nil)
+;; Move (not copy) M-p/M-n to C-p/C-n in order to avoid the Meta key.
+(mapc (lambda (key-func)
+        (define-key isearch-mode-map (kbd (car key-func)) (cadr key-func)))
+      '(("C-p" isearch-ring-retreat) ; Was exit isearch
+        ("C-n" isearch-ring-advance) ; Was exit isearch
+        ("M-p" nil)
+        ("M-n" nil)))
 ;; Use C-c to quit incremental search with this to stay at match.
 (define-key isearch-mode-map (kbd "C-c") 'isearch-exit)
 
 ;; * Minibuffer
-;; Move (not copy) M-p/M-n to C-p/C-n in order to avoid the Meta key. C-p
-;; and C-n were unused.
-(define-key minibuffer-local-map (kbd "C-p") 'previous-history-element)
-(define-key minibuffer-local-map (kbd "C-n") 'next-history-element)
-(define-key minibuffer-local-map (kbd "M-p") nil)
-(define-key minibuffer-local-map (kbd "M-n") nil)
+;; Move (not copy) M-p/M-n to C-p/C-n in order to avoid the Meta key.
+(mapc (lambda (key-func)
+        (define-key
+          minibuffer-local-map (kbd (car key-func)) (cadr key-func)))
+      '(("C-p" previous-history-element) ; Was unused
+        ("C-n" next-history-element)     ; Was unused
+        ("M-p" nil)
+        ("M-n" nil)))
 
 ;; * File config :ARCHIVE:noexport:
 ;;   Local Variables:
