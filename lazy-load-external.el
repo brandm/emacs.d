@@ -1,6 +1,6 @@
 ;; -*- lexical-binding: t -*-
 ;; * File comment
-;;   - Copyright (C) 2000-2016 Michael Brand <michael.ch.brand at gmail.com>
+;;   - Copyright (C) 2000-2017 Michael Brand <michael.ch.brand at gmail.com>
 ;;   - Licensed under GPLv3, see http://www.gnu.org/licenses/gpl-3.0.html
 ;;   - orgstruct-mode supported: On ";; *"-lines use TAB, S-TAB, C-TAB etc.
 ;;   - This file does the lazy load and setup of the external packages.
@@ -8,7 +8,7 @@
 ;; * CIDER mode (minor mode)
 ;;   - History
 ;;     - 2016-06-09 New
-(when (f-load-path-add (concat v-loc-emacs-vc "cider"))
+(when (f-load-path-add v-loc-emacs-vc "cider")
   (f-auto-loads "cider"
                 'cider-connect 'cider-jack-in) ; They are all a `defun'
   (f-feature 'cider))
@@ -16,7 +16,7 @@
 ;; * Clojure mode (major mode)
 ;;   - History
 ;;     - 2016-05-09 New
-(when (f-load-path-add (concat v-loc-emacs-vc "clojure-mode"))
+(when (f-load-path-add v-loc-emacs-vc "clojure-mode")
   (f-auto-loads "clojure-mode"
                 ;; They are all a `define-derived-mode'.
                 '("\\.\\(clj\\|dtm\\|edn\\)\\'" . clojure-mode)
@@ -29,7 +29,7 @@
 ;; * dash.el (library)
 ;;   - History
 ;;     - 2016-06-09 New
-(when (f-load-path-add (concat v-loc-emacs-vc "dash.el"))
+(when (f-load-path-add v-loc-emacs-vc "dash.el")
   (f-feature 'dash))
 
 ;; * Extempore mode (major mode)
@@ -48,7 +48,7 @@
 ;; * hy-mode (major mode)
 ;;   - History
 ;;     - 2016-10-10 New
-(when (f-load-path-add (concat v-loc-emacs-vc "hy-mode"))
+(when (f-load-path-add v-loc-emacs-vc "hy-mode")
   (f-auto-loads "hy-mode"
                 '("\\.hy\\'" . hy-mode)) ; A `define-derived-mode'
   (f-feature 'hy-mode))
@@ -57,7 +57,7 @@
 ;;   - Keep in sync with `f-setup-feature-python'.
 ;;   - History
 ;;     - 2016-09-22 New
-(when (cl-every (lambda (p) (f-load-path-add (concat v-loc-emacs-vc p)))
+(when (cl-every (lambda (subdir) (f-load-path-add v-loc-emacs-vc subdir))
                 '("/live-py-plugin/emacs-live-py-mode"
                   "/live-py-plugin/plugin/PySrc"))
   (f-auto-loads "live-py-mode"
@@ -82,8 +82,8 @@
    'paredit-backward-delete
    'paredit-close-round))
 
-(let ((func 'paredit-mode)) ; A `define-minor-mode'
-  (when (f-load-path-add v-loc-emacs-pkg)
+(when (f-load-path-add v-loc-emacs-pkg)
+  (let ((func 'paredit-mode)) ; A `define-minor-mode'
     (f-auto-loads "paredit" func)
     (global-set-key (kbd "C-c m p") func)
     (f-feature 'paredit 'f-setup-feature-paredit)))
@@ -97,7 +97,7 @@
 ;; * scala-mode2
 ;;   - History
 ;;     - 2016-07-05 New
-(when (f-load-path-add (concat v-loc-emacs-vc "scala-mode2"))
+(when (f-load-path-add v-loc-emacs-vc "scala-mode2")
   (f-auto-loads "scala-mode2"
                 ;; A `define-derived-mode'.
                 '("\\.\\(scala\\|sbt\\)\\'" . scala-mode))
@@ -106,7 +106,7 @@
 ;; * seq.el (library)
 ;;   - History
 ;;     - 2016-06-09 New
-(when (f-load-path-add (concat v-loc-emacs-vc "seq.el"))
+(when (f-load-path-add v-loc-emacs-vc "seq.el")
   (f-feature 'seq))
 
 ;; * smartparens mode (minor mode)
@@ -129,8 +129,8 @@
           ("C-}"     sp-forward-barf-sexp)     ; Was unused
           ("C-)"     sp-forward-slurp-sexp)))) ; Was unused
 
-(let ((func 'smartparens-mode)) ; A `define-minor-mode'
-  (when (f-load-path-add (concat v-loc-emacs-vc "smartparens"))
+(when (f-load-path-add v-loc-emacs-vc "smartparens")
+  (let ((func 'smartparens-mode)) ; A `define-minor-mode'
     (f-auto-loads "smartparens" func)
     (global-set-key (kbd "C-c m s") func)
     (f-feature 'smartparens 'f-setup-feature-smartparens)))
@@ -138,7 +138,7 @@
 ;; * spinner.el (library)
 ;;   - History
 ;;     - 2016-06-09 New
-(when (f-load-path-add (concat v-loc-emacs-vc "spinner.el"))
+(when (f-load-path-add v-loc-emacs-vc "spinner.el")
   (f-feature 'spinner))
 
 ;; * File config :ARCHIVE:noexport:

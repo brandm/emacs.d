@@ -6,8 +6,16 @@ and setting up of each feature is postponed to when it is actually needed
 the first time. At the time when it is really loaded there is a log to the
 messages buffer for learning purposes.
 
-* Usage example
+* Usage examples
 
+For a quick first trial:
+#+BEGIN_SRC shell :eval no
+  cd <where_you_have_your_git_clones>
+  git clone https://github.com/brandm/emacs.d.git
+  emacs -Q -l emacs.d/main.el
+#+END_SRC
+
+With external packages organized in two main directories:
 #+BEGIN_SRC shell :eval no
   emacs -Q \
         --eval '(setq v-loc-emacs-pkg "/<dir_for_single-file-packages>/" \

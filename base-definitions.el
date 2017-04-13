@@ -1,22 +1,43 @@
 ;; -*- lexical-binding: t -*-
 ;; * File comment
-;;   - Copyright (C) 2000-2016 Michael Brand <michael.ch.brand at gmail.com>
+;;   - Copyright (C) 2000-2017 Michael Brand <michael.ch.brand at gmail.com>
 ;;   - Licensed under GPLv3, see http://www.gnu.org/licenses/gpl-3.0.html
 ;;   - orgstruct-mode supported: On ";; *"-lines use TAB, S-TAB, C-TAB etc.
 ;;   - This file contains the base definitions.
 
-;; * Lazy loading of packages
+;; * Message with time since start
+(let ((t0 (float-time)))
+  (defun f-msg (level-str format-str &rest args)
+    "`message' with time since start."
+    (message "%s %.3f: %s"
+             level-str
+             (- (float-time) t0)
+             (apply #'format format-str args))))
+
+;; * Logging of feature loading
+(defun load-err (feature)
+  (funcall (if t 'error 'message) ; t: normal, nil: debug
+           "ERR: Too early loaded feature %S" feature))
+(defun load-inf (feature)
+  (f-msg "INF" "Loaded feature %S" feature))
+(defconst v-provide-advice #'load-inf)
+
+;; * Lazy load features
 (defvar v-loc-emacs-pkg nil "Directory for single-file-packages.")
 (defvar v-loc-emacs-vc nil "Directory with one subdirectory per package.")
 
-(defun f-load-path-add (directory)
-  "If DIRECTORY exists add it to `load-path' and return non-nil.
-For internal packages that have to be redirected to an external
-directory or for external packages."
+(defun f-load-path-add (directory &optional subdirectory)
+  "If DIRECTORY with SUBDIRECTORY exist add it to `load-path'.
+Return non-nil if successful. Used for internal packages that
+have to be redirected to an external directory or for external
+packages."
   ;; - History
   ;;   - 2016-06-15 New
   ;;   - 2016-06-16 Factor out `f-auto-loads'
-  (when (file-readable-p directory) (add-to-list 'load-path directory)))
+  (when directory
+    (let ((path (concat directory subdirectory)))
+      (when (file-readable-p path)
+        (add-to-list 'load-path path)))))
 
 (defun f-auto-loads (file &optional &rest func-or-ext-with-func)
   "`autoload' and `auto-mode-alist' for packages.
@@ -42,7 +63,7 @@ For external packages use `f-auto-loads' conditionally with
 
 ;; * Tracking and setup of lazy loaded features
 (defvar v-lazy-features nil
-  "Accumulated list of features that have been prepared for lazy loading.
+  "Accumulated list of features that have been prepared for lazy load.
 Can be used to force loading at the end of the setup or later")
 
 (defun f-feature (feature &optional setup-feature-function)
@@ -61,14 +82,14 @@ FEATURE is a list with the feature and file name used by
 (defun f-require-lazy-features ()
   "Force `require' of features prepared with `f-feature'."
   (interactive)
-  (f-msg "INF" "#### Requiring lazy loaded features...")
+  (f-msg "INF" "#### Force load...")
   (mapc (lambda (feature)
           (if (consp feature)
               ;; `provide' and file name of the feature do not match.
               (apply #'require feature)
             (require feature)))
         v-lazy-features)
-  (f-msg "INF" "#### Requiring lazy loaded features...done"))
+  (f-msg "INF" "#### Force load...done"))
 
 ;; * File config :ARCHIVE:noexport:
 ;;   Local Variables:
