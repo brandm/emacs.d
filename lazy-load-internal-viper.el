@@ -51,7 +51,7 @@
 (setq-default viper-mode t
               viper-inhibit-startup-message t
               viper-expert-level 3)
-(f-feature 'viper 'f-setup-feature-viper)
+(f-feature 'viper #'f-setup-feature-viper)
 
 ;; * Colemak keyboard layout remapping
 ;;   - Keep separate from `f-setup-feature-viper' defined in the other
@@ -118,7 +118,7 @@ you use the Colemak keyboard layout.")
   (define-key viper-vi-basic-map "n" 'viper-search-next))
 
 (when (equal v-kbd-layout "Colemak")
-  (f-feature 'viper 'f-pk-nj-for-viper-swap))
+  (f-feature 'viper #'f-pk-nj-for-viper-swap))
 
 ;; * File config :ARCHIVE:noexport:
 ;;   Local Variables:

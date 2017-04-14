@@ -43,7 +43,7 @@
   (f-auto-loads "extempore"
                 '("\\.xtm$" . extempore-mode)) ; A `define-derived-mode'
   (f-feature '(extempore-mode "extempore.el")
-             'f-setup-feature-extempore-mode))
+             #'f-setup-feature-extempore-mode))
 
 ;; * hy-mode (major mode)
 ;;   - History
@@ -57,12 +57,18 @@
 ;;   - Keep in sync with `f-setup-feature-python'.
 ;;   - History
 ;;     - 2016-09-22 New
+(defun f-setup-feature-live-py-mode ()
+  (setq live-py-lighter-delaying " Live-D"
+        live-py-lighter-tracing  " Live-T"
+        live-py-lighter-ready    " Live-t"
+        live-py-lighter-fail     " Live-F"))
+
 (when (cl-every (lambda (subdir) (f-load-path-add v-loc-emacs-vc subdir))
                 '("/live-py-plugin/emacs-live-py-mode"
                   "/live-py-plugin/plugin/PySrc"))
   (f-auto-loads "live-py-mode"
                 'live-py-mode) ; A `define-minor-mode'
-  (f-feature 'live-py-mode))
+  (f-feature 'live-py-mode #'f-setup-feature-live-py-mode))
 
 ;; * Matlab mode (major mode)
 (when (f-load-path-add v-loc-emacs-pkg)
@@ -86,7 +92,7 @@
   (let ((func 'paredit-mode)) ; A `define-minor-mode'
     (f-auto-loads "paredit" func)
     (global-set-key (kbd "C-c m p") func)
-    (f-feature 'paredit 'f-setup-feature-paredit)))
+    (f-feature 'paredit #'f-setup-feature-paredit)))
 
 ;; * queue (library)
 ;;   - History
@@ -133,7 +139,7 @@
   (let ((func 'smartparens-mode)) ; A `define-minor-mode'
     (f-auto-loads "smartparens" func)
     (global-set-key (kbd "C-c m s") func)
-    (f-feature 'smartparens 'f-setup-feature-smartparens)))
+    (f-feature 'smartparens #'f-setup-feature-smartparens)))
 
 ;; * spinner.el (library)
 ;;   - History

@@ -19,7 +19,7 @@
   (mapc (lambda (hook) (add-hook hook 'f-setup-buffer-c-or-c++))
         '(c-mode-hook c++-mode-hook)))
 
-(f-feature 'cc-mode 'f-setup-feature-c-or-c++)
+(f-feature 'cc-mode #'f-setup-feature-c-or-c++)
 
 ;; * Diff mode (major mode)
 (defvar diff-mode-map)
@@ -38,7 +38,7 @@
           ("M-<left>"  diff-hunk-prev)    ; Was unused
           ("M-<right>" diff-hunk-next)))) ; Was unused
 
-(f-feature 'diff-mode 'f-setup-feature-diff-mode)
+(f-feature 'diff-mode #'f-setup-feature-diff-mode)
 
 ;; * Eldoc mode (minor mode)
 (setq-default eldoc-minor-mode-string ; Also called "lighter"
@@ -70,7 +70,7 @@
   (f-msg "INF" "`f-setup-feature-python'")
   (define-key python-mode-map (kbd "C-c c") 'live-py-mode))
 
-(f-feature 'python 'f-setup-feature-python)
+(f-feature 'python #'f-setup-feature-python)
 
 ;; * Minibuffer
 ;; Move (not copy) M-p/M-n to C-p/C-n in order to avoid the Meta key.
