@@ -8,22 +8,19 @@
 ;; * Base setup
 ;;   - As early as possible the init of t0, then the advice `provide' and
 ;;     then the other stuff required in case of a failure during this setup.
-;;     User errors at last.
+;;     User errors (`f-check-dirs') at last.
 ;;   - Want 1) to see the *messages* buffer on top and 2) no scratch buffer.
 (message "INF 0.000: Base setup...")
 (load-file (concat (file-name-directory load-file-name)
                    "base-definitions.el"))
 (defadvice provide (after advice-provide-after)
   (funcall v-provide-advice feature))
-(ad-activate 'provide)
+(ad-activate #'provide)
 (ignore-errors (kill-buffer "*scratch*")) ; Allow it to be already killed
 (when (eq system-type 'darwin)
   (setq-default ns-command-modifier 'meta  ; Key "command": Emacs Meta
                 ns-option-modifier 'none)) ; Key "option": Insert AltGr char
-;; Check locations, to be set on Emacs command line.
-(mapc (lambda (dir) (when (and dir (not (file-readable-p dir)))
-                      (user-error "ERR: Missing dir: %s" dir)))
-      (list v-loc-emacs-pkg v-loc-emacs-vc))
+(f-check-dirs '(v-f v-d))
 (f-msg "INF" "Base setup...done")
 
 ;; * Non-lazy load of the features used during lazy load

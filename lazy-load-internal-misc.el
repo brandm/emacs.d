@@ -16,7 +16,7 @@
 
 (defun f-setup-feature-c-or-c++ ()
   (f-msg "INF" "`f-setup-feature-c-or-c++'")
-  (mapc (lambda (hook) (add-hook hook 'f-setup-buffer-c-or-c++))
+  (mapc (lambda (hook) (add-hook hook #'f-setup-buffer-c-or-c++))
         '(c-mode-hook c++-mode-hook)))
 
 (f-feature 'cc-mode #'f-setup-feature-c-or-c++)
@@ -43,7 +43,8 @@
 ;; * Eldoc mode (minor mode)
 (setq-default eldoc-minor-mode-string ; Also called "lighter"
               " E") ; Was " ElDoc" (leading space)
-(mapc (lambda (hook) (add-hook hook 'turn-on-eldoc-mode))
+(mapc (lambda (hook) (add-hook hook #'turn-on-eldoc-mode))
+      ;; Keep in sync with smartparens mode.
       '(emacs-lisp-mode-hook lisp-interaction-mode-hook ielm-mode-hook))
 
 ;; * isearch mode (minor mode)
@@ -59,7 +60,7 @@
         ("M-p" nil)
         ("M-n" nil)))
 ;; Use C-c to quit incremental search with this to stay at match.
-(define-key isearch-mode-map (kbd "C-c") 'isearch-exit)
+(define-key isearch-mode-map (kbd "C-c") #'isearch-exit)
 
 ;; * Python mode (major mode)
 ;;   - History
@@ -68,7 +69,7 @@
 
 (defun f-setup-feature-python ()
   (f-msg "INF" "`f-setup-feature-python'")
-  (define-key python-mode-map (kbd "C-c c") 'live-py-mode))
+  (define-key python-mode-map (kbd "C-c c") #'live-py-mode))
 
 (f-feature 'python #'f-setup-feature-python)
 

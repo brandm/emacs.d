@@ -8,15 +8,15 @@
 ;; * CIDER mode (minor mode)
 ;;   - History
 ;;     - 2016-06-09 New
-(when (f-load-path-add v-loc-emacs-vc "cider")
+(when (f-load-path-add v-d "cider")
   (f-auto-loads "cider"
-                'cider-connect 'cider-jack-in) ; They are all a `defun'
+                #'cider-connect #'cider-jack-in) ; They are all a `defun'
   (f-feature 'cider))
 
 ;; * Clojure mode (major mode)
 ;;   - History
 ;;     - 2016-05-09 New
-(when (f-load-path-add v-loc-emacs-vc "clojure-mode")
+(when (f-load-path-add v-d "clojure-mode")
   (f-auto-loads "clojure-mode"
                 ;; They are all a `define-derived-mode'.
                 '("\\.\\(clj\\|dtm\\|edn\\)\\'" . clojure-mode)
@@ -29,7 +29,7 @@
 ;; * dash.el (library)
 ;;   - History
 ;;     - 2016-06-09 New
-(when (f-load-path-add v-loc-emacs-vc "dash.el")
+(when (f-load-path-add v-d "dash.el")
   (f-feature 'dash))
 
 ;; * Extempore mode (major mode)
@@ -39,7 +39,7 @@
   (f-msg "INF" "`f-setup-feature-extempore-mode'")
   (setq-default extempore-share-directory "/f/x/git/extempore"))
 
-(when (f-load-path-add v-loc-emacs-pkg)
+(when (f-load-path-add v-f)
   (f-auto-loads "extempore"
                 '("\\.xtm$" . extempore-mode)) ; A `define-derived-mode'
   (f-feature '(extempore-mode "extempore.el")
@@ -48,7 +48,7 @@
 ;; * hy-mode (major mode)
 ;;   - History
 ;;     - 2016-10-10 New
-(when (f-load-path-add v-loc-emacs-vc "hy-mode")
+(when (f-load-path-add v-d "hy-mode")
   (f-auto-loads "hy-mode"
                 '("\\.hy\\'" . hy-mode)) ; A `define-derived-mode'
   (f-feature 'hy-mode))
@@ -58,23 +58,24 @@
 ;;   - History
 ;;     - 2016-09-22 New
 (defun f-setup-feature-live-py-mode ()
+  (f-msg "INF" "`f-setup-feature-live-py-mode'")
   (setq live-py-lighter-delaying " Live-D"
         live-py-lighter-tracing  " Live-T"
         live-py-lighter-ready    " Live-t"
         live-py-lighter-fail     " Live-F"))
 
-(when (cl-every (lambda (subdir) (f-load-path-add v-loc-emacs-vc subdir))
-                '("/live-py-plugin/emacs-live-py-mode"
-                  "/live-py-plugin/plugin/PySrc"))
+(when (cl-every (lambda (subdir) (f-load-path-add v-d subdir))
+                '("live-py-plugin/emacs-live-py-mode"
+                  "live-py-plugin/plugin/PySrc"))
   (f-auto-loads "live-py-mode"
                 'live-py-mode) ; A `define-minor-mode'
   (f-feature 'live-py-mode #'f-setup-feature-live-py-mode))
 
 ;; * Matlab mode (major mode)
-(when (f-load-path-add v-loc-emacs-pkg)
+(when (f-load-path-add v-f)
   (f-auto-loads "matlab"
                 ;; They are all a `defun'.
-                '("\\.m$" . matlab-mode) 'matlab-shell)
+                '("\\.m$" . matlab-mode) #'matlab-shell)
   (f-feature 'matlab))
 
 ;; * Paredit mode (minor mode)
@@ -88,8 +89,8 @@
    'paredit-backward-delete
    'paredit-close-round))
 
-(when (f-load-path-add v-loc-emacs-pkg)
-  (let ((func 'paredit-mode)) ; A `define-minor-mode'
+(when (f-load-path-add v-f)
+  (let ((func #'paredit-mode)) ; A `define-minor-mode'
     (f-auto-loads "paredit" func)
     (global-set-key (kbd "C-c m p") func)
     (f-feature 'paredit #'f-setup-feature-paredit)))
@@ -97,13 +98,13 @@
 ;; * queue (library)
 ;;   - History
 ;;     - 2016-06-09 New
-(when (f-load-path-add v-loc-emacs-pkg)
+(when (f-load-path-add v-f)
   (f-feature 'queue))
 
 ;; * scala-mode2
 ;;   - History
 ;;     - 2016-07-05 New
-(when (f-load-path-add v-loc-emacs-vc "scala-mode2")
+(when (f-load-path-add v-d "scala-mode2")
   (f-auto-loads "scala-mode2"
                 ;; A `define-derived-mode'.
                 '("\\.\\(scala\\|sbt\\)\\'" . scala-mode))
@@ -112,7 +113,7 @@
 ;; * seq.el (library)
 ;;   - History
 ;;     - 2016-06-09 New
-(when (f-load-path-add v-loc-emacs-vc "seq.el")
+(when (f-load-path-add v-d "seq.el")
   (f-feature 'seq))
 
 ;; * smartparens mode (minor mode)
@@ -135,16 +136,26 @@
           ("C-}"     sp-forward-barf-sexp)     ; Was unused
           ("C-)"     sp-forward-slurp-sexp)))) ; Was unused
 
-(when (f-load-path-add v-loc-emacs-vc "smartparens")
-  (let ((func 'smartparens-mode)) ; A `define-minor-mode'
+(when (f-load-path-add v-d "smartparens")
+  (let ((func #'smartparens-mode)) ; A `define-minor-mode'
     (f-auto-loads "smartparens" func)
     (global-set-key (kbd "C-c m s") func)
-    (f-feature 'smartparens #'f-setup-feature-smartparens)))
+    (f-feature 'smartparens #'f-setup-feature-smartparens)
+    (mapc (lambda (hook) (add-hook hook #'smartparens-mode))
+          '(;; Lisp dialects
+            clojure-mode-hook
+            eval-expression-minibuffer-setup-hook
+            extempore-mode-hook
+            hy-mode-hook
+            ;; Keep this rest in sync with Eldoc mode.
+            emacs-lisp-mode-hook
+            lisp-interaction-mode-hook
+            ielm-mode-hook))))
 
 ;; * spinner.el (library)
 ;;   - History
 ;;     - 2016-06-09 New
-(when (f-load-path-add v-loc-emacs-vc "spinner.el")
+(when (f-load-path-add v-d "spinner.el")
   (f-feature 'spinner))
 
 ;; * File config :ARCHIVE:noexport:

@@ -18,13 +18,13 @@ For a quick first trial:
 With external packages organized in two main directories:
 #+BEGIN_SRC shell :eval no
   emacs -Q \
-        --eval '(setq v-loc-emacs-pkg "/<dir_for_single-file-packages>/" \
-                 v-loc-emacs-vc "/<dir_with_one_subdir_per_package>/")' \
-        -l '/<dir_with_one_subdir_per_package>/emacs.d/main.el'
+        --eval '(setq v-f "<dir_for_single-file-packages>" \
+                 v-d "<dir_with_one_subdir_per_package>")' \
+        -l '<dir_with_one_subdir_per_package>/emacs.d/main.el'
 #+END_SRC
 
 If you use the Colemak keyboard layout together with Viper mode like me add
-~v-kbd-layout "Colemak"~ to the ~setq~ command above.
+~v-k "co"~ to the ~setq~ command above.
 
 - http://en.wikipedia.org/wiki/Colemak
 

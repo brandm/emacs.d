@@ -44,9 +44,10 @@
                       ; `viper-toggle-search-style'.
           "C-c M-n")) ; Keep `cider-repl-set-ns' in Cider mode. Was
                       ; `viper-next-destructive-command'.
-  (define-key viper-vi-basic-map [remap open-line] 'f-open-line-for-viper)
-  (define-key viper-vi-global-user-map "gg" 'beginning-of-buffer)
-  (define-key viper-insert-basic-map (kbd "C-[") 'viper-change-state-to-vi))
+  (define-key viper-vi-basic-map [remap open-line] #'f-open-line-for-viper)
+  (define-key viper-vi-global-user-map "gg" #'beginning-of-buffer)
+  (define-key
+    viper-insert-basic-map (kbd "C-[") #'viper-change-state-to-vi))
 
 (setq-default viper-mode t
               viper-inhibit-startup-message t
@@ -96,28 +97,29 @@
 ;;     -   k /   j :: /usr/bin/less common keys.
 ;;     -   y /   e :: /usr/bin/less alternative keys (easier for Colemak).
 ;;     - C-p / C-n :: /usr/bin/less alternative keys (easier for Colemak).
-(defvar v-kbd-layout nil
-  "The keyboard layout currently in use.
-Use ~(setq v-kbd-layout \"Colemak\")~ before loading this file if
-you use the Colemak keyboard layout.")
+(defvar v-k nil
+  "The keyboard layout in use.
+Use ~(setq v-k \"co\")~ before loading this file if you use the
+Colemak keyboard layout. Also convenient on the MessagEase
+keyboard.")
 
 (defun f-pk-nj-for-viper-swap ()
   "Vim nnoremap p<->k and n<->j for the Colemak keyboard layout."
   (interactive)
-  (define-key viper-vi-basic-map "p" 'viper-previous-line) ; Was "k"
-  (define-key viper-vi-basic-map "k" 'viper-put-back)      ; Was "p"
-  (define-key viper-vi-basic-map "n" 'viper-next-line)     ; Was "j"
-  (define-key viper-vi-basic-map "j" 'viper-search-next))  ; Was "n"
+  (define-key viper-vi-basic-map "p" #'viper-previous-line) ; Was "k"
+  (define-key viper-vi-basic-map "k" #'viper-put-back)      ; Was "p"
+  (define-key viper-vi-basic-map "n" #'viper-next-line)     ; Was "j"
+  (define-key viper-vi-basic-map "j" #'viper-search-next))  ; Was "n"
 
 (defun f-pk-nj-for-viper-reset ()
   "Reset of `f-pk-nj-for-viper-swap'."
   (interactive)
-  (define-key viper-vi-basic-map "k" 'viper-previous-line)
-  (define-key viper-vi-basic-map "p" 'viper-put-back)
-  (define-key viper-vi-basic-map "j" 'viper-next-line)
-  (define-key viper-vi-basic-map "n" 'viper-search-next))
+  (define-key viper-vi-basic-map "k" #'viper-previous-line)
+  (define-key viper-vi-basic-map "p" #'viper-put-back)
+  (define-key viper-vi-basic-map "j" #'viper-next-line)
+  (define-key viper-vi-basic-map "n" #'viper-search-next))
 
-(when (equal v-kbd-layout "Colemak")
+(when (equal v-k "co")
   (f-feature 'viper #'f-pk-nj-for-viper-swap))
 
 ;; * File config :ARCHIVE:noexport:

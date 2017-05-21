@@ -16,15 +16,31 @@
 
 ;; * Logging of feature loading
 (defun load-err (feature)
-  (funcall (if t 'error 'message) ; t: normal, nil: debug
+  (funcall (if t #'error #'message) ; t: normal, nil: debug
            "ERR: Too early loaded feature %S" feature))
 (defun load-inf (feature)
   (f-msg "INF" "Loaded feature %S" feature))
 (defconst v-provide-advice #'load-inf)
 
+;; * Check directories
+(defun f-check-dirs (directory-list)
+  "Check the directories to be set on the Emacs command line."
+  (mapc (lambda (symbol)
+          (let ((value (symbol-value symbol)))
+            (if value
+                (unless (file-readable-p value)
+                  (user-error "ERR: `%s' specifies a missing directory %s"
+                              symbol value))
+              (f-msg "INF" "`%s' not specified" symbol))))
+        directory-list))
+
 ;; * Lazy load features
-(defvar v-loc-emacs-pkg nil "Directory for single-file-packages.")
-(defvar v-loc-emacs-vc nil "Directory with one subdirectory per package.")
+(defvar v-f nil
+  "Directory for single-file-packages.
+Allowed to be nil for quick start like ~emacs -Q -l emacs.d/main.el~")
+(defvar v-d nil
+  "Directory with one subdirectory per package.
+Allowed to be nil for quick start like ~emacs -Q -l emacs.d/main.el~")
 
 (defun f-load-path-add (directory &optional subdirectory)
   "If DIRECTORY with SUBDIRECTORY exist add it to `load-path'.
@@ -35,7 +51,7 @@ packages."
   ;;   - 2016-06-15 New
   ;;   - 2016-06-16 Factor out `f-auto-loads'
   (when directory
-    (let ((path (concat directory subdirectory)))
+    (let ((path (concat (file-name-as-directory directory) subdirectory)))
       (when (file-readable-p path)
         (add-to-list 'load-path path)))))
 
