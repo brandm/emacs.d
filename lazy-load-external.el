@@ -140,31 +140,31 @@
 (defun f-setup-feature-smartparens ()
   (f-msg "INF" "`f-setup-feature-smartparens'")
   ;; Remove from pairs.
-  (mapc (lambda (open) (sp-pair open nil :actions :rem)) '("'" "`"))
+  (dolist (open '("'" "`"))
+    (sp-pair open nil :actions :rem))
   (setq-default sp-highlight-pair-overlay nil)
-  (mapc (lambda (key-func)
-          (define-key
-            smartparens-mode-map (kbd (car key-func)) (cadr key-func)))
-        '(("C-c SPC" mark-sexp)                ; No C-M-
-          ("C-{"     sp-backward-barf-sexp)    ; Was unused
-          ("C-("     sp-backward-slurp-sexp)   ; Was unused
-          ("C-}"     sp-forward-barf-sexp)     ; Was unused
-          ("C-)"     sp-forward-slurp-sexp)))) ; Was unused
+  (dolist (key-func '(("C-c SPC" mark-sexp)               ; No C-M-
+                      ("C-{"     sp-backward-barf-sexp)   ; Was unused
+                      ("C-("     sp-backward-slurp-sexp)  ; Was unused
+                      ("C-}"     sp-forward-barf-sexp)    ; Was unused
+                      ("C-)"     sp-forward-slurp-sexp))) ; Was unused
+    (define-key smartparens-mode-map (kbd (car key-func)) (cadr key-func))))
 
 (when (f-load-path-add v-d "smartparens")
   (let ((func #'smartparens-mode)) ; A `define-minor-mode'
     (f-auto-loads "smartparens" func)
     (global-set-key (kbd "C-c m s") func)
-    (mapc (lambda (hook) (add-hook hook #'smartparens-mode))
-          '(;; Lisp dialects
-            clojure-mode-hook
-            eval-expression-minibuffer-setup-hook
-            extempore-mode-hook
-            hy-mode-hook
-            ;; Keep this rest in sync with Eldoc mode.
-            emacs-lisp-mode-hook
-            lisp-interaction-mode-hook
-            ielm-mode-hook))
+    (dolist (hook '(;; Lisp dialects
+                    clojure-mode-hook
+                    eval-expression-minibuffer-setup-hook
+                    extempore-mode-hook
+                    hy-mode-hook
+                    ;; Keep this rest in sync with adding
+                    ;; `turn-on-eldoc-mode' to hooks.
+                    emacs-lisp-mode-hook
+                    lisp-interaction-mode-hook
+                    ielm-mode-hook))
+      (add-hook hook #'smartparens-mode))
     (f-feature 'smartparens #'f-setup-feature-smartparens)))
 
 ;; * spinner.el (library)

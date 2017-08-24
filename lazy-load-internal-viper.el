@@ -37,13 +37,14 @@
   ;; viper-want-ctl-h-help keep the value t.
   (setq-default viper-want-ctl-h-help t)
   ;; Revert some Viper mode mappings.
-  (mapc (lambda (key) (define-key viper-vi-basic-map (kbd key) nil))
-        '("C-u"       ; Keep `universal-argument'. Was `viper-scroll-down'.
-                      ; In Viper mode use "C-b C-d" instead of C-u.
-          "C-c /"     ; Keep `org-sparse-tree' in Org mode. Was
-                      ; `viper-toggle-search-style'.
-          "C-c M-n")) ; Keep `cider-repl-set-ns' in Cider mode. Was
-                      ; `viper-next-destructive-command'.
+  (dolist (key '("C-u"       ; Keep `universal-argument'. Was
+                             ; `viper-scroll-down'. In Viper mode use "C-b
+                             ; C-d" instead of C-u.
+                 "C-c /"     ; Keep `org-sparse-tree' in Org mode. Was
+                             ; `viper-toggle-search-style'.
+                 "C-c M-n")) ; Keep `cider-repl-set-ns' in Cider mode. Was
+                             ; `viper-next-destructive-command'.
+    (define-key viper-vi-basic-map (kbd key) nil))
   (define-key viper-vi-basic-map [remap open-line] #'f-open-line-for-viper)
   (define-key viper-vi-global-user-map "gg" #'beginning-of-buffer)
   (define-key

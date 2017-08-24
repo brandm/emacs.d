@@ -25,14 +25,13 @@
 ;; * Check directories
 (defun f-check-dirs (directory-list)
   "Check the directories to be set on the Emacs command line."
-  (mapc (lambda (symbol)
-          (let ((value (symbol-value symbol)))
-            (if value
-                (unless (file-readable-p value)
-                  (user-error "ERR: `%s' specifies a missing directory %s"
-                              symbol value))
-              (f-msg "INF" "`%s' not specified" symbol))))
-        directory-list))
+  (dolist (symbol directory-list)
+    (let ((value (symbol-value symbol)))
+      (if value
+          (unless (file-readable-p value)
+            (user-error "ERR: `%s' specifies a missing directory %s"
+                        symbol value))
+        (f-msg "INF" "`%s' not specified" symbol)))))
 
 ;; * Lazy load features
 (defvar v-f nil
@@ -68,14 +67,13 @@ For external packages use `f-auto-loads' conditionally with
 ~(when (f-load-path-add \"DIRECTORY\") (f-auto-loads [...]))~."
   ;; - History
   ;;   - 2016-06-16 Factored out from `f-load-path-add'
-  (mapc (lambda (x)
-          (autoload
-            (if (consp x) (cdr x) x)
-            file
-            "Undocumented `autoload'."
-            t)
-          (when (consp x) (add-to-list 'auto-mode-alist x)))
-        func-or-ext-with-func))
+  (dolist (x func-or-ext-with-func)
+    (autoload
+      (if (consp x) (cdr x) x)
+      file
+      "Undocumented `autoload'."
+      t)
+    (when (consp x) (add-to-list 'auto-mode-alist x))))
 
 ;; * Tracking and setup of lazy loaded features
 (defvar v-lazy-features nil
@@ -99,12 +97,11 @@ FEATURE is a list with the feature and file name used by
   "Force `require' of features prepared with `f-feature'."
   (interactive)
   (f-msg "INF" "#### Force load...")
-  (mapc (lambda (feature)
-          (if (consp feature)
-              ;; `provide' and file name of the feature do not match.
-              (apply #'require feature)
-            (require feature)))
-        v-lazy-features)
+  (dolist (feature v-lazy-features)
+    (if (consp feature)
+        ;; `provide' and file name of the feature do not match.
+        (apply #'require feature)
+      (require feature)))
   (f-msg "INF" "#### Force load...done"))
 
 ;; * File config :ARCHIVE:noexport:

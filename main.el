@@ -33,11 +33,10 @@
 (f-msg "INF" "Lazy load...")
 ;; If a `provide' occurs then stop with an error.
 (let ((v-provide-advice #'load-err))
-  (mapc (lambda (file)
-          (load-file (concat (file-name-directory load-file-name) file)))
-        '("lazy-load-external.el"
-          "lazy-load-internal-misc.el"
-          "lazy-load-internal-viper.el")))
+  (dolist (file '("lazy-load-external.el"
+                  "lazy-load-internal-misc.el"
+                  "lazy-load-internal-viper.el"))
+    (load-file (concat (file-name-directory load-file-name) file))))
 (f-msg "INF" "Lazy load...done")
 
 ;; * Non-lazy load features

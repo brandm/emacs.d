@@ -16,8 +16,8 @@
 
 (defun f-setup-feature-c-or-c++ ()
   (f-msg "INF" "`f-setup-feature-c-or-c++'")
-  (mapc (lambda (hook) (add-hook hook #'f-setup-buffer-c-or-c++))
-        '(c-mode-hook c++-mode-hook)))
+  (dolist (hook '(c-mode-hook c++-mode-hook))
+    (add-hook hook #'f-setup-buffer-c-or-c++)))
 
 (f-feature 'cc-mode #'f-setup-feature-c-or-c++)
 
@@ -31,21 +31,22 @@
   (custom-set-faces '(diff-added   ((t (:foreground "forest green"))) 'now)
                     '(diff-removed ((t (:foreground "firebrick"   ))) 'now)
                     '(diff-context ((t (:foreground "black"       ))) 'now))
-  (mapc (lambda (key-func)
-          (define-key diff-mode-map (kbd (car key-func)) (cadr key-func)))
-        '(("M-<up>"    diff-file-prev)    ; Was unused
-          ("M-<down>"  diff-file-next)    ; Was unused
-          ("M-<left>"  diff-hunk-prev)    ; Was unused
-          ("M-<right>" diff-hunk-next)))) ; Was unused
+  (dolist (key-func '(("M-<up>"    diff-file-prev)   ; Was unused
+                      ("M-<down>"  diff-file-next)   ; Was unused
+                      ("M-<left>"  diff-hunk-prev)   ; Was unused
+                      ("M-<right>" diff-hunk-next))) ; Was unused
+    (define-key diff-mode-map (kbd (car key-func)) (cadr key-func))))
 
 (f-feature 'diff-mode #'f-setup-feature-diff-mode)
 
 ;; * Eldoc mode (minor mode)
 (setq-default eldoc-minor-mode-string ; Also called "lighter"
               " E") ; Was " ElDoc" (leading space)
-(mapc (lambda (hook) (add-hook hook #'turn-on-eldoc-mode))
-      ;; Keep in sync with smartparens mode.
-      '(emacs-lisp-mode-hook lisp-interaction-mode-hook ielm-mode-hook))
+(dolist (hook '(;; Keep in sync with adding `smartparens-mode' to hooks.
+                emacs-lisp-mode-hook
+                lisp-interaction-mode-hook
+                ielm-mode-hook))
+  (add-hook hook #'turn-on-eldoc-mode))
 
 ;; * isearch mode (minor mode)
 ;;   - Note on isearch history: First time access is via isearch-mode-map
@@ -53,12 +54,11 @@
 ;;     minibuffer-local-isearch-map and previous-history-element (already
 ;;     C-p)
 ;; Move (not copy) M-p/M-n to C-p/C-n in order to avoid the Meta key.
-(mapc (lambda (key-func)
-        (define-key isearch-mode-map (kbd (car key-func)) (cadr key-func)))
-      '(("C-p" isearch-ring-retreat) ; Was exit isearch
-        ("C-n" isearch-ring-advance) ; Was exit isearch
-        ("M-p" nil)
-        ("M-n" nil)))
+(dolist (key-func '(("C-p" isearch-ring-retreat) ; Was exit isearch
+                    ("C-n" isearch-ring-advance) ; Was exit isearch
+                    ("M-p" nil)
+                    ("M-n" nil)))
+  (define-key isearch-mode-map (kbd (car key-func)) (cadr key-func)))
 ;; Use C-c to quit incremental search with this to stay at match.
 (define-key isearch-mode-map (kbd "C-c") #'isearch-exit)
 
@@ -86,13 +86,11 @@
 
 ;; * Minibuffer
 ;; Move (not copy) M-p/M-n to C-p/C-n in order to avoid the Meta key.
-(mapc (lambda (key-func)
-        (define-key
-          minibuffer-local-map (kbd (car key-func)) (cadr key-func)))
-      '(("C-p" previous-history-element) ; Was unused
-        ("C-n" next-history-element)     ; Was unused
-        ("M-p" nil)
-        ("M-n" nil)))
+(dolist (key-func '(("C-p" previous-history-element) ; Was unused
+                    ("C-n" next-history-element)     ; Was unused
+                    ("M-p" nil)
+                    ("M-n" nil)))
+  (define-key minibuffer-local-map (kbd (car key-func)) (cadr key-func)))
 
 ;; * File config :ARCHIVE:noexport:
 ;;   Local Variables:
