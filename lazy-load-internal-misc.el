@@ -62,9 +62,20 @@
 ;; Use C-c to quit incremental search with this to stay at match.
 (define-key isearch-mode-map (kbd "C-c") #'isearch-exit)
 
+;; * Org mode (major mode)
+(defun f-setup-feature-org-main ()
+  (f-msg "INF" "`f-setup-feature-org-main'")
+  ;; For for example 256-color terminal and light background. The Emacs
+  ;; color brightwhite is only defined in a text terminal Emacs.
+  (when (and (eq 'light (frame-parameter nil 'background-mode))
+             (color-defined-p "brightwhite"))
+    (set-face-foreground 'org-hide "brightwhite")))
+
+(f-feature 'org #'f-setup-feature-org-main)
+
 ;; * Python mode (major mode)
 ;;   - History
-;;     - 2016-09-22 New
+;;     - 2016-09-22 Create
 (defvar python-mode-map)
 
 (defun f-setup-feature-python ()
