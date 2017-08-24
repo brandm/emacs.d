@@ -5,9 +5,24 @@
 ;;   - orgstruct-mode supported: On ";; *"-lines use TAB, S-TAB, C-TAB etc.
 ;;   - This file does the lazy load and setup of the external packages.
 
+;; * adaptive-wrap (minor mode)
+;;   - History
+;;     - 2017-06-11 Create
+(when (f-load-path-add v-f)
+  (f-auto-loads "adaptive-wrap"
+                #'adaptive-wrap-prefix-mode) ; A `define-minor-mode'
+  ;; When 6 it is to indent more than a possibly following hard wrapped
+  ;; indent by 4.
+  (setq-default adaptive-wrap-extra-indent 6)
+  ;; For when a file is visited with this as a file local variable before
+  ;; the feature has been loaded yet. Necessary even after v0.5.1 which
+  ;; added `integerp' to the `defvar'.
+  (put 'adaptive-wrap-extra-indent 'safe-local-variable #'integerp)
+  (f-feature 'adaptive-wrap))
+
 ;; * CIDER mode (minor mode)
 ;;   - History
-;;     - 2016-06-09 New
+;;     - 2016-06-09 Create
 (when (f-load-path-add v-d "cider")
   (f-auto-loads "cider"
                 #'cider-connect #'cider-jack-in) ; They are all a `defun'
@@ -15,7 +30,7 @@
 
 ;; * Clojure mode (major mode)
 ;;   - History
-;;     - 2016-05-09 New
+;;     - 2016-05-09 Create
 (when (f-load-path-add v-d "clojure-mode")
   (f-auto-loads "clojure-mode"
                 ;; They are all a `define-derived-mode'.
@@ -28,13 +43,13 @@
 
 ;; * dash.el (library)
 ;;   - History
-;;     - 2016-06-09 New
+;;     - 2016-06-09 Create
 (when (f-load-path-add v-d "dash.el")
   (f-feature 'dash))
 
 ;; * Extempore mode (major mode)
 ;;   - History
-;;     - 2016-03-10 New
+;;     - 2016-03-10 Create
 (defun f-setup-feature-extempore-mode ()
   (f-msg "INF" "`f-setup-feature-extempore-mode'")
   (setq-default extempore-share-directory "/f/x/git/extempore"))
@@ -47,7 +62,7 @@
 
 ;; * hy-mode (major mode)
 ;;   - History
-;;     - 2016-10-10 New
+;;     - 2016-10-10 Create
 (when (f-load-path-add v-d "hy-mode")
   (f-auto-loads "hy-mode"
                 '("\\.hy\\'" . hy-mode)) ; A `define-derived-mode'
@@ -56,7 +71,7 @@
 ;; * live-py-mode (minor mode)
 ;;   - Keep in sync with `f-setup-feature-python'.
 ;;   - History
-;;     - 2016-09-22 New
+;;     - 2016-09-22 Create
 (defun f-setup-feature-live-py-mode ()
   (f-msg "INF" "`f-setup-feature-live-py-mode'")
   (setq live-py-lighter-delaying " Live-D"
@@ -80,7 +95,7 @@
 
 ;; * Paredit mode (minor mode)
 ;;   - History
-;;     - 2016-02-18 New
+;;     - 2016-02-18 Create
 (defun f-setup-feature-paredit ()
   (f-msg "INF" "`f-setup-feature-paredit'")
   (setq-default paredit-lighter " P") ; Was " Paredit" (leading space)
@@ -97,13 +112,13 @@
 
 ;; * queue (library)
 ;;   - History
-;;     - 2016-06-09 New
+;;     - 2016-06-09 Create
 (when (f-load-path-add v-f)
   (f-feature 'queue))
 
 ;; * scala-mode2
 ;;   - History
-;;     - 2016-07-05 New
+;;     - 2016-07-05 Create
 (when (f-load-path-add v-d "scala-mode2")
   (f-auto-loads "scala-mode2"
                 ;; A `define-derived-mode'.
@@ -112,13 +127,13 @@
 
 ;; * seq.el (library)
 ;;   - History
-;;     - 2016-06-09 New
+;;     - 2016-06-09 Create
 (when (f-load-path-add v-d "seq.el")
   (f-feature 'seq))
 
 ;; * smartparens mode (minor mode)
 ;;   - History
-;;     - 2016-06-09 New
+;;     - 2016-06-09 Create
 (defvar smartparens-mode-map)
 (declare-function sp-pair "smartparens")
 
@@ -140,7 +155,6 @@
   (let ((func #'smartparens-mode)) ; A `define-minor-mode'
     (f-auto-loads "smartparens" func)
     (global-set-key (kbd "C-c m s") func)
-    (f-feature 'smartparens #'f-setup-feature-smartparens)
     (mapc (lambda (hook) (add-hook hook #'smartparens-mode))
           '(;; Lisp dialects
             clojure-mode-hook
@@ -150,11 +164,12 @@
             ;; Keep this rest in sync with Eldoc mode.
             emacs-lisp-mode-hook
             lisp-interaction-mode-hook
-            ielm-mode-hook))))
+            ielm-mode-hook))
+    (f-feature 'smartparens #'f-setup-feature-smartparens)))
 
 ;; * spinner.el (library)
 ;;   - History
-;;     - 2016-06-09 New
+;;     - 2016-06-09 Create
 (when (f-load-path-add v-d "spinner.el")
   (f-feature 'spinner))
 

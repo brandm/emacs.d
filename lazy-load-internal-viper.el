@@ -16,7 +16,7 @@
 ;;   - Tests to be made after changes: Go through the description above,
 ;;     test the windowed and the terminal Emacs.
 ;;   - History
-;;     - 2007-08-21 New
+;;     - 2007-08-21 Create
 ;;     - 2008-03-08 Off-topic: Switch from qwertz to Colemak keyboard layout
 ;;     - 2008-11-17 quit viper insert mode with C-c
 ;;     - 2008-04-07 Vim nnoremap p<->k and n<->j for Colemak keyboard layout
@@ -24,7 +24,7 @@
 (defun f-open-line-for-viper ()
   "For Viper mode: Disable `open-line' except in Org table."
   ;; - History
-  ;;   - 2014-11-27 New
+  ;;   - 2014-11-27 Create
   (interactive)
   (if (and (eq major-mode 'org-mode) (org-at-table-p) org-special-ctrl-o)
       ;; From `org-open-line' that remaps the keys for `open-line'.

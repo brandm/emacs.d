@@ -48,7 +48,7 @@ Return non-nil if successful. Used for internal packages that
 have to be redirected to an external directory or for external
 packages."
   ;; - History
-  ;;   - 2016-06-15 New
+  ;;   - 2016-06-15 Create
   ;;   - 2016-06-16 Factor out `f-auto-loads'
   (when directory
     (let ((path (concat (file-name-as-directory directory) subdirectory)))
