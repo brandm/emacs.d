@@ -74,10 +74,10 @@
 ;;     - 2016-09-22 Create
 (defun f-setup-feature-live-py-mode ()
   (f-msg "INF" "`f-setup-feature-live-py-mode'")
-  (setq live-py-lighter-delaying " Live-D"
-        live-py-lighter-tracing  " Live-T"
-        live-py-lighter-ready    " Live-t"
-        live-py-lighter-fail     " Live-F"))
+  (setq-default live-py-lighter-delaying " Live-D"
+                live-py-lighter-tracing  " Live-T"
+                live-py-lighter-ready    " Live-t"
+                live-py-lighter-fail     " Live-F"))
 
 (when (cl-every (lambda (subdir) (f-load-path-add v-d subdir))
                 '("live-py-plugin/emacs-live-py-mode"
@@ -85,6 +85,54 @@
   (f-auto-loads "live-py-mode"
                 'live-py-mode) ; A `define-minor-mode'
   (f-feature 'live-py-mode #'f-setup-feature-live-py-mode))
+
+;; * origami.el (minor mode)
+;;   - History
+;;     - 2017-08-27 Create.
+(when (f-load-path-add v-d "origami.el")
+  (f-auto-loads "origami"
+                #'origami-mode) ; A `define-minor-mode'
+  (f-feature 'origami))
+
+;; * outorg (library)
+;;   - History
+;;     - 2017-08-27 Create.
+(when (f-load-path-add v-d "outorg")
+  (f-feature 'outorg))
+
+;; * outshine (enhancement for Outline minor mode)
+;;   - History
+;;     - 2017-08-27 Create.
+(defun f-setup-feature-outshine ()
+  (f-msg "INF" "`f-setup-feature-outshine'")
+  (setq-default
+   ;; Like Org config
+   outshine-org-style-global-cycling-at-bob-p t
+   ;; Like Org config. In Viper mode available only in Emacs state (E).
+   outshine-use-speed-commands t
+   outshine-fontify (lambda () (not (derived-mode-p 'prog-mode)))))
+
+(defun f-outshine-toggle ()
+  (interactive)
+  (if outline-minor-mode
+      (outline-minor-mode 0) ; Turn off
+    ;; `outshine-hook-function' is not added earlier to
+    ;; `outline-minor-mode-hook' to support plain `outline-minor-mode'
+    ;; without outshine before outshine has been used the first time.
+    ;; `outline-minor-mode' can not be used without outshine after outshine
+    ;; has been used the first time also when `outshine-hook-function' is
+    ;; not added to `outline-minor-mode-hook' but `outshine-hook-function'
+    ;; is called after `outline-minor-mode' to start outshine. See also the
+    ;; `user-error' in `f-outline-minor-mode-toggle'.
+    (add-hook 'outline-minor-mode-hook #'outshine-hook-function)
+    (outline-minor-mode))) ; Turn on
+
+(when (f-load-path-add v-d "outshine")
+  (f-auto-loads "outshine"
+                #'outshine-hook-function) ; A `defun'
+  (f-feature 'outshine #'f-setup-feature-outshine))
+
+(global-set-key (kbd "C-c m m") #'f-outshine-toggle) ; Easiest to type
 
 ;; * Matlab mode (major mode)
 (when (f-load-path-add v-f)
@@ -105,10 +153,11 @@
    'paredit-close-round))
 
 (when (f-load-path-add v-f)
-  (let ((func #'paredit-mode)) ; A `define-minor-mode'
-    (f-auto-loads "paredit" func)
-    (global-set-key (kbd "C-c m p") func)
-    (f-feature 'paredit #'f-setup-feature-paredit)))
+  (f-auto-loads "paredit"
+                #'paredit-mode) ; A `define-minor-mode'
+  (f-feature 'paredit #'f-setup-feature-paredit))
+
+(global-set-key (kbd "C-c m p") #'paredit-mode)
 
 ;; * queue (library)
 ;;   - History
@@ -116,7 +165,7 @@
 (when (f-load-path-add v-f)
   (f-feature 'queue))
 
-;; * scala-mode2
+;; * scala-mode2 (major mode)
 ;;   - History
 ;;     - 2016-07-05 Create
 (when (f-load-path-add v-d "scala-mode2")
@@ -151,21 +200,22 @@
     (define-key smartparens-mode-map (kbd (car key-func)) (cadr key-func))))
 
 (when (f-load-path-add v-d "smartparens")
-  (let ((func #'smartparens-mode)) ; A `define-minor-mode'
-    (f-auto-loads "smartparens" func)
-    (global-set-key (kbd "C-c m s") func)
-    (dolist (hook '(;; Lisp dialects
-                    clojure-mode-hook
-                    eval-expression-minibuffer-setup-hook
-                    extempore-mode-hook
-                    hy-mode-hook
-                    ;; Keep this rest in sync with adding
-                    ;; `turn-on-eldoc-mode' to hooks.
-                    emacs-lisp-mode-hook
-                    lisp-interaction-mode-hook
-                    ielm-mode-hook))
-      (add-hook hook #'smartparens-mode))
-    (f-feature 'smartparens #'f-setup-feature-smartparens)))
+  (f-auto-loads "smartparens"
+                #'smartparens-mode) ; A `define-minor-mode'
+  (dolist (hook '(;; Lisp dialects
+                  clojure-mode-hook
+                  eval-expression-minibuffer-setup-hook
+                  extempore-mode-hook
+                  hy-mode-hook
+                  ;; Keep this rest in sync with adding
+                  ;; `turn-on-eldoc-mode' to hooks.
+                  emacs-lisp-mode-hook
+                  lisp-interaction-mode-hook
+                  ielm-mode-hook))
+    (add-hook hook #'smartparens-mode))
+  (f-feature 'smartparens #'f-setup-feature-smartparens))
+
+(global-set-key (kbd "C-c m s") #'smartparens-mode)
 
 ;; * spinner.el (library)
 ;;   - History

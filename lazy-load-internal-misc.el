@@ -65,6 +65,11 @@
 ;; * Org mode (major mode)
 (defun f-setup-feature-org-main ()
   (f-msg "INF" "`f-setup-feature-org-main'")
+  (setq-default
+   ;; Like outshine config
+   org-cycle-global-at-bob t
+   ;; Like outshine config. In Viper mode available only in Emacs state (E).
+   org-use-speed-commands t)
   ;; For for example 256-color terminal and light background. The Emacs
   ;; color brightwhite is only defined in a text terminal Emacs.
   (when (and (eq 'light (frame-parameter nil 'background-mode))
@@ -72,6 +77,31 @@
     (set-face-foreground 'org-hide "brightwhite")))
 
 (f-feature 'org #'f-setup-feature-org-main)
+(global-set-key (kbd "C-c m o") #'org-mode) ; Mnemonic Org
+
+;; * Outline mode (major or minor mode)
+;;   - History
+;;     - 2017-08-27 Create.
+(defun f-outshine-hook-function-has-been-called-p ()
+  "Guess whether what its name says."
+  (and (boundp 'outshine-outline-regexp-base)
+       outshine-outline-regexp-base
+       (not (string= "" outshine-outline-regexp-base))))
+
+(defun f-outline-minor-mode-toggle ()
+  (interactive)
+  (cond (outline-minor-mode
+         (outline-minor-mode 0)) ; Turn off
+        ((f-outshine-hook-function-has-been-called-p)
+         (user-error
+          (concat "ERR: outshine has already been used, therefore "
+                  "`outline-minor-mode' can not be used without outshine "
+                  "anymore. To use outshine use `f-outshine-toggle'.")))
+        (t
+         (outline-minor-mode)))) ; Turn on
+
+;; Mnemonic outLine
+(global-set-key (kbd "C-c m l") #'f-outline-minor-mode-toggle)
 
 ;; * Python mode (major mode)
 ;;   - History

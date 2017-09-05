@@ -54,7 +54,7 @@ packages."
       (when (file-readable-p path)
         (add-to-list 'load-path path)))))
 
-(defun f-auto-loads (file &optional &rest func-or-ext-with-func)
+(defun f-auto-loads (file &rest func-or-ext-with-func)
   "`autoload' and `auto-mode-alist' for packages.
 
 FILE: The name of the file without .el to be loaded, contains the
