@@ -66,7 +66,6 @@
 (defun f-setup-feature-org-main ()
   (f-msg "INF" "`f-setup-feature-org-main'")
   (setq-default
-   ;; Like outshine config
    org-cycle-global-at-bob t
    ;; Like outshine config. In Viper mode available only in Emacs state (E).
    org-use-speed-commands t)
@@ -82,19 +81,13 @@
 ;; * Outline mode (major or minor mode)
 ;;   - History
 ;;     - 2017-08-27 Create.
-(defun f-outshine-hook-function-has-been-called-p ()
-  "Guess whether what its name says."
-  (and (boundp 'outshine-outline-regexp-base)
-       outshine-outline-regexp-base
-       (not (string= "" outshine-outline-regexp-base))))
-
 (defun f-outline-minor-mode-toggle ()
   (interactive)
   (cond (outline-minor-mode
          (outline-minor-mode 0)) ; Turn off
-        ((f-outshine-hook-function-has-been-called-p)
+        ((featurep 'outshine)
          (user-error
-          (concat "ERR: outshine has already been used, therefore "
+          (concat "ERR: outshine has already been loaded, therefore "
                   "`outline-minor-mode' can not be used without outshine "
                   "anymore. To use outshine use `f-outshine-toggle'.")))
         (t

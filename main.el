@@ -8,7 +8,7 @@
 ;; * Base setup
 ;;   - As early as possible the init of t0, then the advice `provide' and
 ;;     then the other stuff required in case of a failure during this setup.
-;;     User errors (`f-check-dirs') at last.
+;;     User errors (`f-check-directories') at last.
 ;;   - Want 1) to see the *messages* buffer on top and 2) no scratch buffer.
 (message "INF 0.000: Base setup...")
 (load-file (concat (file-name-directory load-file-name)
@@ -20,7 +20,7 @@
 (when (eq system-type 'darwin)
   (setq-default ns-command-modifier 'meta  ; Key "command": Emacs Meta
                 ns-option-modifier 'none)) ; Key "option": Insert AltGr char
-(f-check-dirs '(v-f v-d))
+(f-check-directories '(v-f v-d))
 (f-msg "INF" "Base setup...done")
 
 ;; * Non-lazy load of the features used during lazy load

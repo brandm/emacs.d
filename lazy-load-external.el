@@ -106,25 +106,36 @@
 (defun f-setup-feature-outshine ()
   (f-msg "INF" "`f-setup-feature-outshine'")
   (setq-default
-   ;; Like Org config
-   outshine-org-style-global-cycling-at-bob-p t
    ;; Like Org config. In Viper mode available only in Emacs state (E).
    outshine-use-speed-commands t
-   outshine-fontify (lambda () (not (derived-mode-p 'prog-mode)))))
+   outshine-fontify (lambda () (not (derived-mode-p 'prog-mode))))
+  ;; `outshine-hook-function' is not added earlier to
+  ;; `outline-minor-mode-hook' to support plain `outline-minor-mode' without
+  ;; outshine before outshine has been used the first time.
+  ;; `outline-minor-mode' can not be used without outshine after outshine
+  ;; has been used the first time also when `outshine-hook-function' is not
+  ;; added to `outline-minor-mode-hook' but `outshine-hook-function' is
+  ;; called after `outline-minor-mode' to start outshine. See also the
+  ;; `user-error' in `f-outline-minor-mode-toggle'.
+  (add-hook 'outline-minor-mode-hook #'outshine-hook-function)
+  (add-hook 'outline-minor-mode-hook #'f-setup-buffer-outshine t))
+
+(defun f-setup-buffer-outshine ()
+  ;; `outline-minor-mode-hook' is also run when _leaving_
+  ;; `outline-minor-mode'.
+  (f-msg "INF" (format "`f-setup-buffer-outshine'%s"
+                       (if outline-minor-mode
+                           ""
+                         " (Outline minor mode has only turned off)")))
+  (when outline-minor-mode
+    (setq outshine-org-style-global-cycling-at-bob-p
+          (not (outline-on-heading-p)))))
 
 (defun f-outshine-toggle ()
   (interactive)
   (if outline-minor-mode
       (outline-minor-mode 0) ; Turn off
-    ;; `outshine-hook-function' is not added earlier to
-    ;; `outline-minor-mode-hook' to support plain `outline-minor-mode'
-    ;; without outshine before outshine has been used the first time.
-    ;; `outline-minor-mode' can not be used without outshine after outshine
-    ;; has been used the first time also when `outshine-hook-function' is
-    ;; not added to `outline-minor-mode-hook' but `outshine-hook-function'
-    ;; is called after `outline-minor-mode' to start outshine. See also the
-    ;; `user-error' in `f-outline-minor-mode-toggle'.
-    (add-hook 'outline-minor-mode-hook #'outshine-hook-function)
+    (require 'outshine)
     (outline-minor-mode))) ; Turn on
 
 (when (f-load-path-add v-d "outshine")

@@ -23,9 +23,9 @@
 (defconst v-provide-advice #'load-inf)
 
 ;; * Check directories
-(defun f-check-dirs (directory-list)
+(defun f-check-directories (symbol-list)
   "Check the directories to be set on the Emacs command line."
-  (dolist (symbol directory-list)
+  (dolist (symbol symbol-list)
     (let ((value (symbol-value symbol)))
       (if value
           (unless (file-readable-p value)
