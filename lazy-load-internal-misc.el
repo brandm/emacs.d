@@ -42,11 +42,12 @@
 ;; * Eldoc mode (minor mode)
 (setq-default eldoc-minor-mode-string ; Also called "lighter"
               " E") ; Was " ElDoc" (leading space)
-(dolist (hook '(;; Keep in sync with adding `smartparens-mode' to hooks.
+(dolist (hook '(;; Keep in sync with adding `smartparens-mode' to the same
+                ;; hooks.
                 emacs-lisp-mode-hook
                 lisp-interaction-mode-hook
                 ielm-mode-hook))
-  (add-hook hook #'turn-on-eldoc-mode))
+  (add-hook hook #'eldoc-mode))
 
 ;; * isearch mode (minor mode)
 ;;   - Note on isearch history: First time access is via isearch-mode-map
@@ -65,6 +66,7 @@
 ;; * Org mode (major mode)
 (defun f-setup-feature-org-main ()
   (f-msg "INF" "`f-setup-feature-org-main'")
+  (f-msg "INF" "%s" (org-version nil t))
   (setq-default
    org-cycle-global-at-bob t
    ;; Like outshine config. In Viper mode available only in Emacs state (E).
@@ -75,6 +77,24 @@
              (color-defined-p "brightwhite"))
     (set-face-foreground 'org-hide "brightwhite")))
 
+(defun f-setup-feature-info-for-org ()
+  (f-msg "INF" "`f-setup-feature-info-for-org'")
+  ;; Not the friendliest but much simpler than fiddling with the INFOPATH
+  ;; environment variable and its trailing colon.
+  (require 'info)
+  (info-initialize)
+  (push (concat (file-name-as-directory v-d) "org-mode/doc")
+        Info-directory-list))
+
+(when (f-load-path-add v-d "org-mode/lisp")
+  ;; Remove internal Org mode from `load-path'.
+  (cl-delete-if (lambda (path) (string-match-p "/lisp/org$" path))
+                load-path))
+(when (f-file-readable-p v-d "org-mode/doc")
+  (add-hook 'Info-mode-hook #'f-setup-feature-info-for-org))
+
+;; The rest is unconditional for the case of fall-back to internal Org mode.
+(setq-default org-use-extra-keys t) ; "You must set it before loading org."
 (f-feature 'org #'f-setup-feature-org-main)
 (global-set-key (kbd "C-c m o") #'org-mode) ; Mnemonic Org
 

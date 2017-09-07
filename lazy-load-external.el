@@ -121,13 +121,13 @@
   (add-hook 'outline-minor-mode-hook #'f-setup-buffer-outshine t))
 
 (defun f-setup-buffer-outshine ()
-  ;; `outline-minor-mode-hook' is also run when _leaving_
-  ;; `outline-minor-mode'.
+  ;; `outline-minor-mode-hook' is also run when `outline-minor-mode' is
+  ;; _leaving_.
   (f-msg "INF" (format "`f-setup-buffer-outshine'%s"
                        (if outline-minor-mode
                            ""
-                         " (Outline minor mode has only turned off)")))
-  (when outline-minor-mode
+                         " (Outline minor mode is leaving)")))
+  (when outline-minor-mode ; `outline-minor-mode' is entering
     (setq outshine-org-style-global-cycling-at-bob-p
           (not (outline-on-heading-p)))))
 
@@ -218,8 +218,8 @@
                   eval-expression-minibuffer-setup-hook
                   extempore-mode-hook
                   hy-mode-hook
-                  ;; Keep this rest in sync with adding
-                  ;; `turn-on-eldoc-mode' to hooks.
+                  ;; Keep this rest in sync with adding `eldoc-mode' to the
+                  ;; same hooks.
                   emacs-lisp-mode-hook
                   lisp-interaction-mode-hook
                   ielm-mode-hook))

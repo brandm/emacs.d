@@ -24,10 +24,12 @@
 (f-msg "INF" "Base setup...done")
 
 ;; * Non-lazy load of the features used during lazy load
-;;   - As a side effect of calling some of the used functions non-lazy load
-;;     as few features as possible.
+;;   - As a side effect of calling some of the functions instrumented with
+;;     autoload and used later during lazy load do load as few features as
+;;     possible now.
 (kbd "")
 (cl-every nil nil)
+(cl-delete-if nil nil)
 
 ;; * Lazy load features
 (f-msg "INF" "Lazy load...")

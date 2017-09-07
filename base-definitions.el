@@ -41,18 +41,24 @@ Allowed to be nil for quick start like ~emacs -Q -l emacs.d/main.el~")
   "Directory with one subdirectory per package.
 Allowed to be nil for quick start like ~emacs -Q -l emacs.d/main.el~")
 
+(defun f-file-readable-p (directory &optional subdirectory)
+  "Return path if DIRECTORY with SUBDIRECTORY exists."
+  ;; History:
+  ;; - 2017-09-07 Factored out from `f-load-path-add'
+  (let ((path (concat (file-name-as-directory directory) subdirectory)))
+    (and (file-readable-p path) path)))
+
 (defun f-load-path-add (directory &optional subdirectory)
   "If DIRECTORY with SUBDIRECTORY exist add it to `load-path'.
 Return non-nil if successful. Used for internal packages that
 have to be redirected to an external directory or for external
 packages."
-  ;; - History
-  ;;   - 2016-06-15 Create
-  ;;   - 2016-06-16 Factor out `f-auto-loads'
-  (when directory
-    (let ((path (concat (file-name-as-directory directory) subdirectory)))
-      (when (file-readable-p path)
-        (add-to-list 'load-path path)))))
+  ;; History:
+  ;; - 2016-06-15 Create
+  ;; - 2016-06-16 Factor out `f-auto-loads'
+  ;; - 2017-09-07 Factor out `f-file-readable-p'
+  (let ((path (f-file-readable-p directory subdirectory)))
+    (when path (add-to-list 'load-path path))))
 
 (defun f-auto-loads (file &rest func-or-ext-with-func)
   "`autoload' and `auto-mode-alist' for packages.
@@ -65,8 +71,8 @@ extension regexp and a function.
 For external packages use `f-auto-loads' conditionally with
 `f-load-path-add' because `load-path' is a prerequisite:
 ~(when (f-load-path-add \"DIRECTORY\") (f-auto-loads [...]))~."
-  ;; - History
-  ;;   - 2016-06-16 Factored out from `f-load-path-add'
+  ;; History:
+  ;; - 2016-06-16 Factored out from `f-load-path-add'
   (dolist (x func-or-ext-with-func)
     (autoload
       (if (consp x) (cdr x) x)
