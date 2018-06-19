@@ -1,7 +1,8 @@
 ;; -*- lexical-binding: t -*-
 ;; * File comment
-;;   - Copyright (C) 2000-2017 Michael Brand <michael.ch.brand at gmail.com>
+;;   - Copyright (C) 2000-2018 Michael Brand <michael.ch.brand at gmail.com>
 ;;   - Licensed under GPLv3, see http://www.gnu.org/licenses/gpl-3.0.html
+;;   - URL: http://github.com/brandm/emacs.d
 ;;   - orgstruct-mode supported: On ";; *"-lines use TAB, S-TAB, C-TAB etc.
 ;;   - This file contains the base definitions.
 
@@ -70,7 +71,8 @@ extension regexp and a function.
 
 For external packages use `f-auto-loads' conditionally with
 `f-load-path-add' because `load-path' is a prerequisite:
-~(when (f-load-path-add \"DIRECTORY\") (f-auto-loads [...]))~."
+`(when (f-load-path-add \"DIRECTORY\")
+   (f-auto-loads [...]))'."
   ;; History:
   ;; - 2016-06-16 Factored out from `f-load-path-add'
   (dolist (x func-or-ext-with-func)
@@ -110,7 +112,7 @@ FEATURE is a list with the feature and file name used by
       (require feature)))
   (f-msg "INF" "#### Force load...done"))
 
-;; * File config :ARCHIVE:noexport:
+;; * File config
 ;;   Local Variables:
 ;;     coding: us-ascii-unix
 ;;     eval: (orgstruct-mode)

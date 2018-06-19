@@ -1,7 +1,8 @@
 ;; -*- lexical-binding: t -*-
 ;; * File comment
-;;   - Copyright (C) 2000-2017 Michael Brand <michael.ch.brand at gmail.com>
+;;   - Copyright (C) 2000-2018 Michael Brand <michael.ch.brand at gmail.com>
 ;;   - Licensed under GPLv3, see http://www.gnu.org/licenses/gpl-3.0.html
+;;   - URL: http://github.com/brandm/emacs.d
 ;;   - orgstruct-mode supported: On ";; *"-lines use TAB, S-TAB, C-TAB etc.
 ;;   - This file does the lazy load and setup of the external packages.
 
@@ -117,8 +118,8 @@
   ;; added to `outline-minor-mode-hook' but `outshine-hook-function' is
   ;; called after `outline-minor-mode' to start outshine. See also the
   ;; `user-error' in `f-outline-minor-mode-toggle'.
-  (add-hook 'outline-minor-mode-hook #'outshine-hook-function)
-  (add-hook 'outline-minor-mode-hook #'f-setup-buffer-outshine t))
+  (dolist (func (list #'outshine-hook-function #'f-setup-buffer-outshine))
+    (add-hook 'outline-minor-mode-hook func t)))
 
 (defun f-setup-buffer-outshine ()
   ;; `outline-minor-mode-hook' is also run when `outline-minor-mode' is
@@ -203,11 +204,11 @@
   (dolist (open '("'" "`"))
     (sp-pair open nil :actions :rem))
   (setq-default sp-highlight-pair-overlay nil)
-  (dolist (key-func '(("C-c SPC" mark-sexp)               ; No C-M-
-                      ("C-{"     sp-backward-barf-sexp)   ; Was unused
-                      ("C-("     sp-backward-slurp-sexp)  ; Was unused
-                      ("C-}"     sp-forward-barf-sexp)    ; Was unused
-                      ("C-)"     sp-forward-slurp-sexp))) ; Was unused
+  (dolist (key-func '(("C-c SPC" #'mark-sexp)               ; No C-M-
+                      ("C-{"     #'sp-backward-barf-sexp)   ; Was unused
+                      ("C-("     #'sp-backward-slurp-sexp)  ; Was unused
+                      ("C-}"     #'sp-forward-barf-sexp)    ; Was unused
+                      ("C-)"     #'sp-forward-slurp-sexp))) ; Was unused
     (define-key smartparens-mode-map (kbd (car key-func)) (cadr key-func))))
 
 (when (f-load-path-add v-d "smartparens")
@@ -234,7 +235,7 @@
 (when (f-load-path-add v-d "spinner.el")
   (f-feature 'spinner))
 
-;; * File config :ARCHIVE:noexport:
+;; * File config
 ;;   Local Variables:
 ;;     coding: us-ascii-unix
 ;;     eval: (orgstruct-mode)

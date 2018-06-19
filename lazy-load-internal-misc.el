@@ -1,7 +1,8 @@
 ;; -*- lexical-binding: t -*-
 ;; * File comment
-;;   - Copyright (C) 2000-2017 Michael Brand <michael.ch.brand at gmail.com>
+;;   - Copyright (C) 2000-2018 Michael Brand <michael.ch.brand at gmail.com>
 ;;   - Licensed under GPLv3, see http://www.gnu.org/licenses/gpl-3.0.html
+;;   - URL: http://github.com/brandm/emacs.d
 ;;   - orgstruct-mode supported: On ";; *"-lines use TAB, S-TAB, C-TAB etc.
 ;;   - This file does the lazy load and setup of the internal packages
 ;;     except Viper mode.
@@ -31,10 +32,10 @@
   (custom-set-faces '(diff-added   ((t (:foreground "forest green"))) 'now)
                     '(diff-removed ((t (:foreground "firebrick"   ))) 'now)
                     '(diff-context ((t (:foreground "black"       ))) 'now))
-  (dolist (key-func '(("M-<up>"    diff-file-prev)   ; Was unused
-                      ("M-<down>"  diff-file-next)   ; Was unused
-                      ("M-<left>"  diff-hunk-prev)   ; Was unused
-                      ("M-<right>" diff-hunk-next))) ; Was unused
+  (dolist (key-func '(("M-<up>"    #'diff-file-prev)   ; Was unused
+                      ("M-<down>"  #'diff-file-next)   ; Was unused
+                      ("M-<left>"  #'diff-hunk-prev)   ; Was unused
+                      ("M-<right>" #'diff-hunk-next))) ; Was unused
     (define-key diff-mode-map (kbd (car key-func)) (cadr key-func))))
 
 (f-feature 'diff-mode #'f-setup-feature-diff-mode)
@@ -55,8 +56,8 @@
 ;;     minibuffer-local-isearch-map and previous-history-element (already
 ;;     C-p)
 ;; Move (not copy) M-p/M-n to C-p/C-n in order to avoid the Meta key.
-(dolist (key-func '(("C-p" isearch-ring-retreat) ; Was exit isearch
-                    ("C-n" isearch-ring-advance) ; Was exit isearch
+(dolist (key-func '(("C-p" #'isearch-ring-retreat) ; Was exit isearch
+                    ("C-n" #'isearch-ring-advance) ; Was exit isearch
                     ("M-p" nil)
                     ("M-n" nil)))
   (define-key isearch-mode-map (kbd (car key-func)) (cadr key-func)))
@@ -75,7 +76,71 @@
   ;; color brightwhite is only defined in a text terminal Emacs.
   (when (and (eq 'light (frame-parameter nil 'background-mode))
              (color-defined-p "brightwhite"))
-    (set-face-foreground 'org-hide "brightwhite")))
+    (set-face-foreground 'org-hide "brightwhite"))
+  (add-hook 'org-mode-hook #'f-setup-buffer-org-main))
+
+(defun f-setup-buffer-org-main ()
+  (f-msg "INF" "`f-setup-buffer-org-main'")
+  (f-setup-buffer-org-faces))
+
+;; ** Face settings
+;;    - See variable `face-remapping-alist' locally in an Org buffer.
+;;    - History
+;;      - 2015-09-29 More friendly with reverse video etc.
+;;      - 2016-01-26 Change headings instead of misc Org faces
+(defun f-setup-buffer-org-faces ()
+  ;; - Deriving `org-block' from `shadow' seems wrong.
+  ;; - The blue default foreground color of `org-table' is too annoying.
+  ;; - The foreground colors of `org-level-3' and `org-level-4' are shared
+  ;;   with other faces:
+  ;;   - Blue1 ------ font-lock-function-name-face - outline-1 - org-level-1
+  ;;   - sienna ----- font-lock-variable-name-face - outline-2 - org-level-2
+  ;;   - Purple
+  ;;       |- font-lock-keyword-face
+  ;;       |    |- outline-3 - `org-level-3'
+  ;;       |    '- org-special-keyword
+  ;;       |------- org-date
+  ;;       |------- org-footnote
+  ;;       '------- org-sexp-date
+  ;;   - Firebrick
+  ;;       |- font-lock-comment-face
+  ;;       |    |- outline-4 - `org-level-4'
+  ;;       |    '- org-meta-line - org-block-begin-line - org-block-end-line
+  ;;       |------- org-formula (table internals like "| <r> |")
+  ;;       '------- org-upcoming-deadline
+  ;;   - ForestGreen ----- font-lock-type-face ----- outline-5 - org-level-5
+  ;;   - dark cyan ------- font-lock-constant-face - outline-6 - org-level-6
+  ;;   - dark slate blue - font-lock-builtin-face -- outline-7 - org-level-7
+  ;;   - VioletRed4 ------ font-lock-string-face --- outline-8 - org-level-8
+  (pcase-dolist (`(,replace ,replacement)
+                 '((org-block default)
+                   (org-table default)
+                   (org-level-3 outline-6) ; Replace with outline-5 or -6
+                   (org-level-4 outline-7)
+                   (org-level-5 org-level-1)
+                   (org-level-6 org-level-2)
+                   (org-level-7 org-level-3)
+                   (org-level-8 org-level-4)))
+    (face-remap-add-relative replace replacement))
+  ;; The foreground color of `org-scheduled-previously' is not
+  ;; distinguishable from `org-upcoming-deadline'. (face-remap-add-relative
+  ;; 'org-scheduled-previously 'org-scheduled-today) in or outside of
+  ;; `org-mode-hook' does not seem to work.
+  (copy-face 'org-scheduled-today 'org-scheduled-previously)
+  ;; The foreground colors of headlines with deadline in agenda view.
+  ;; Argument FRACTION ("what fraction of the head-warning time has passed")
+  ;; of function `org-agenda-deadline-face':
+  ;; - (-inf..0.0): Before warning period, deadline not yet shown.
+  ;; - 0.0:         Begin of warning period.
+  ;; - (0.0..1.0):  During warning period.
+  ;; - 1.0:         End of warning period, day of deadline.
+  ;; - (1.0..inf):  After warning period, overdue.
+  (setq org-agenda-deadline-faces
+        ;; From larger to smaller.
+        '(;; (1.0..inf)
+          (1.00001 . org-warning)
+          ;; [0.0..1.0]
+          (0.0    . org-upcoming-deadline))))
 
 (defun f-setup-feature-info-for-org ()
   (f-msg "INF" "`f-setup-feature-info-for-org'")
@@ -129,13 +194,13 @@
 
 ;; * Minibuffer
 ;; Move (not copy) M-p/M-n to C-p/C-n in order to avoid the Meta key.
-(dolist (key-func '(("C-p" previous-history-element) ; Was unused
-                    ("C-n" next-history-element)     ; Was unused
+(dolist (key-func '(("C-p" #'previous-history-element) ; Was unused
+                    ("C-n" #'next-history-element)     ; Was unused
                     ("M-p" nil)
                     ("M-n" nil)))
   (define-key minibuffer-local-map (kbd (car key-func)) (cadr key-func)))
 
-;; * File config :ARCHIVE:noexport:
+;; * File config
 ;;   Local Variables:
 ;;     coding: us-ascii-unix
 ;;     eval: (orgstruct-mode)

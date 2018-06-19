@@ -1,7 +1,8 @@
 ;; -*- lexical-binding: t -*-
 ;; * File comment
-;;   - Copyright (C) 2000-2017 Michael Brand <michael.ch.brand at gmail.com>
+;;   - Copyright (C) 2000-2018 Michael Brand <michael.ch.brand at gmail.com>
 ;;   - Licensed under GPLv3, see http://www.gnu.org/licenses/gpl-3.0.html
+;;   - URL: http://github.com/brandm/emacs.d
 ;;   - orgstruct-mode supported: On ";; *"-lines use TAB, S-TAB, C-TAB etc.
 ;;   - This file does the lazy load and setup of the internal package Viper
 ;;     mode.
@@ -33,9 +34,16 @@
 
 (defun f-setup-feature-viper ()
   (f-msg "INF" "`f-setup-feature-viper'")
+  (setq-default viper-suppress-input-method-change-message t)
   ;; After the feature "viper" has been provided to make
-  ;; viper-want-ctl-h-help keep the value t.
+  ;; `viper-want-ctl-h-help' keep the value t.
   (setq-default viper-want-ctl-h-help t)
+  (if (display-graphic-p)
+      (define-key viper-insert-basic-map "\e" #'viper-change-state-to-vi)
+    ;; Workaround to avoid that `ESC' (`viper-intercept-ESC-key') in
+    ;; 'vi-state results in the error "viper-ESC: Wrong type argument:
+    ;; stringp, [escape]" when `viper-ESC-key' is the default `[escape]'.
+    (setq-default viper-ESC-key "\e"))
   ;; Revert some Viper mode mappings.
   (dolist (key '("C-u"       ; Keep `universal-argument'. Was
                              ; `viper-scroll-down'. In Viper mode use "C-b
@@ -45,10 +53,8 @@
                  "C-c M-n")) ; Keep `cider-repl-set-ns' in Cider mode. Was
                              ; `viper-next-destructive-command'.
     (define-key viper-vi-basic-map (kbd key) nil))
-  (define-key viper-vi-basic-map [remap open-line] #'f-open-line-for-viper)
   (define-key viper-vi-global-user-map "gg" #'beginning-of-buffer)
-  (define-key
-    viper-insert-basic-map (kbd "C-[") #'viper-change-state-to-vi))
+  (define-key viper-vi-basic-map [remap open-line] #'f-open-line-for-viper))
 
 (setq-default viper-mode t
               viper-inhibit-startup-message t
@@ -123,7 +129,7 @@ keyboard.")
 (when (equal v-k "co")
   (f-feature 'viper #'f-pk-nj-for-viper-swap))
 
-;; * File config :ARCHIVE:noexport:
+;; * File config
 ;;   Local Variables:
 ;;     coding: us-ascii-unix
 ;;     eval: (orgstruct-mode)

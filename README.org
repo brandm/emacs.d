@@ -1,3 +1,15 @@
+* File comment :noexport:
+
+- Copyright (C) 2000-2018 Michael Brand <michael.ch.brand at gmail.com>
+- Licensed under GPLv3, see http://www.gnu.org/licenses/gpl-3.0.html
+- URL: http://github.com/brandm/emacs.d
+
+# For any possibly not so perfect exporter with an issue like
+# http://github.com/wallyqs/org-ruby/issues/26
+#+EXCLUDE_TAGS: noexport
+# Support the old name too.
+#+EXPORT_EXCLUDE_TAGS: noexport
+
 * Summary
 
 This is an Emacs setup with as few ~(require 'foo)~ as possible. It uses
@@ -81,7 +93,7 @@ steps I got the whole picture with ~autoload~, ~auto-mode-alist~,
 is only the part that is already cleaned up. The bigger part with the old
 mess is not yet ready to be moved to here.
 
-* File config :ARCHIVE:noexport:
+* File config :noexport:
 
 # Do not indent "#+" for compatibility with any exporter.
 
@@ -91,7 +103,7 @@ mess is not yet ready to be moved to here.
 # Support the old name too.
 #+EXPORT_EXCLUDE_TAGS: noexport
 
-: Local Variables:
-:   coding: us-ascii-unix
-:   fill-column: 76
-: End:
+# Local Variables:
+#   coding: us-ascii-unix
+#   fill-column: 76
+# End:
