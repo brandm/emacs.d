@@ -32,11 +32,11 @@
   (custom-set-faces '(diff-added   ((t (:foreground "forest green"))) 'now)
                     '(diff-removed ((t (:foreground "firebrick"   ))) 'now)
                     '(diff-context ((t (:foreground "black"       ))) 'now))
-  (dolist (key-func '(("M-<up>"    #'diff-file-prev)   ; Was unused
-                      ("M-<down>"  #'diff-file-next)   ; Was unused
-                      ("M-<left>"  #'diff-hunk-prev)   ; Was unused
-                      ("M-<right>" #'diff-hunk-next))) ; Was unused
-    (define-key diff-mode-map (kbd (car key-func)) (cadr key-func))))
+  (pcase-dolist (`(,key ,func) '(("M-<left>"  diff-file-prev)   ; Was unused
+                                 ("M-<right>" diff-file-next)   ; Was unused
+                                 ("M-<up>"    diff-hunk-prev)   ; Was unused
+                                 ("M-<down>"  diff-hunk-next))) ; Was unused
+    (define-key diff-mode-map (kbd key) func)))
 
 (f-feature 'diff-mode #'f-setup-feature-diff-mode)
 
@@ -56,11 +56,12 @@
 ;;     minibuffer-local-isearch-map and previous-history-element (already
 ;;     C-p)
 ;; Move (not copy) M-p/M-n to C-p/C-n in order to avoid the Meta key.
-(dolist (key-func '(("C-p" #'isearch-ring-retreat) ; Was exit isearch
-                    ("C-n" #'isearch-ring-advance) ; Was exit isearch
-                    ("M-p" nil)
-                    ("M-n" nil)))
-  (define-key isearch-mode-map (kbd (car key-func)) (cadr key-func)))
+(pcase-dolist (`(,key ,func)
+               '(("M-p" nil)
+                 ("C-p" isearch-ring-retreat) ; Was exit isearch
+                 ("M-n" nil)
+                 ("C-n" isearch-ring-advance))) ; Was exit isearch
+  (define-key isearch-mode-map (kbd key) func))
 ;; Use C-c to quit incremental search with this to stay at match.
 (define-key isearch-mode-map (kbd "C-c") #'isearch-exit)
 
@@ -194,11 +195,12 @@
 
 ;; * Minibuffer
 ;; Move (not copy) M-p/M-n to C-p/C-n in order to avoid the Meta key.
-(dolist (key-func '(("C-p" #'previous-history-element) ; Was unused
-                    ("C-n" #'next-history-element)     ; Was unused
-                    ("M-p" nil)
-                    ("M-n" nil)))
-  (define-key minibuffer-local-map (kbd (car key-func)) (cadr key-func)))
+(pcase-dolist (`(,key ,func)
+               '(("M-p" nil)
+                 ("C-p" previous-history-element) ; Was unused
+                 ("M-n" nil)
+                 ("C-n" next-history-element))) ; Was unused
+  (define-key minibuffer-local-map (kbd key) func))
 
 ;; * File config
 ;;   Local Variables:

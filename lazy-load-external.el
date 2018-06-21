@@ -118,7 +118,7 @@
   ;; added to `outline-minor-mode-hook' but `outshine-hook-function' is
   ;; called after `outline-minor-mode' to start outshine. See also the
   ;; `user-error' in `f-outline-minor-mode-toggle'.
-  (dolist (func (list #'outshine-hook-function #'f-setup-buffer-outshine))
+  (dolist (func '(outshine-hook-function f-setup-buffer-outshine))
     (add-hook 'outline-minor-mode-hook func t)))
 
 (defun f-setup-buffer-outshine ()
@@ -204,12 +204,13 @@
   (dolist (open '("'" "`"))
     (sp-pair open nil :actions :rem))
   (setq-default sp-highlight-pair-overlay nil)
-  (dolist (key-func '(("C-c SPC" #'mark-sexp)               ; No C-M-
-                      ("C-{"     #'sp-backward-barf-sexp)   ; Was unused
-                      ("C-("     #'sp-backward-slurp-sexp)  ; Was unused
-                      ("C-}"     #'sp-forward-barf-sexp)    ; Was unused
-                      ("C-)"     #'sp-forward-slurp-sexp))) ; Was unused
-    (define-key smartparens-mode-map (kbd (car key-func)) (cadr key-func))))
+  (pcase-dolist (`(,key ,func)
+                 '(("C-c SPC" mark-sexp)               ; No C-M-
+                   ("C-{"     sp-backward-barf-sexp)   ; Was unused
+                   ("C-("     sp-backward-slurp-sexp)  ; Was unused
+                   ("C-}"     sp-forward-barf-sexp)    ; Was unused
+                   ("C-)"     sp-forward-slurp-sexp))) ; Was unused
+    (define-key smartparens-mode-map (kbd key) func)))
 
 (when (f-load-path-add v-d "smartparens")
   (f-auto-loads "smartparens"
