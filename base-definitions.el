@@ -6,34 +6,6 @@
 ;;   - orgstruct-mode supported: On ";; *"-lines use TAB, S-TAB, C-TAB etc.
 ;;   - This file contains the base definitions.
 
-;; * Message with time since start
-(let ((t0 (float-time)))
-  (defun f-msg (level-str format-str &rest args)
-    "`message' with time since start."
-    (message "%s %.3f: %s"
-             level-str
-             (- (float-time) t0)
-             (apply #'format format-str args))))
-
-;; * Logging of feature loading
-(defun load-err (feature)
-  (funcall (if t #'error #'message) ; t: normal, nil: debug
-           "ERR: Too early loaded feature %S" feature))
-(defun load-inf (feature)
-  (f-msg "INF" "Loaded feature %S" feature))
-(defconst v-provide-advice #'load-inf)
-
-;; * Check directories
-(defun f-check-directories (symbol-list)
-  "Check the directories to be set on the Emacs command line."
-  (dolist (symbol symbol-list)
-    (let ((value (symbol-value symbol)))
-      (if value
-          (unless (file-readable-p value)
-            (user-error "ERR: `%s' specifies a missing directory %s"
-                        symbol value))
-        (f-msg "INF" "`%s' not specified" symbol)))))
-
 ;; * Lazy load features
 (defvar v-f nil
   "Directory for single-file-packages.
