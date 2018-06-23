@@ -29,9 +29,11 @@
   (f-msg "INF" "`f-setup-feature-diff-mode'")
   ;; Set foreground colors to those used by git for colored diff. It makes
   ;; it much clearer to ediff two diff files.
-  (custom-set-faces '(diff-added   ((t (:foreground "forest green"))) 'now)
-                    '(diff-removed ((t (:foreground "firebrick"   ))) 'now)
-                    '(diff-context ((t (:foreground "black"       ))) 'now))
+  (pcase-dolist (`(,face ,color) '((diff-added   "forest green")
+                                   (diff-removed "firebrick")
+                                   (diff-context "black")))
+    (set-face-background face nil)
+    (set-face-foreground face color))
   (pcase-dolist (`(,key ,func) '(("M-<left>"  diff-file-prev)   ; Was unused
                                  ("M-<right>" diff-file-next)   ; Was unused
                                  ("M-<up>"    diff-hunk-prev)   ; Was unused
@@ -73,10 +75,10 @@
    org-cycle-global-at-bob t
    ;; Like outshine config. In Viper mode available only in Emacs state (E).
    org-use-speed-commands t)
-  ;; For for example 256-color terminal and light background. The Emacs
-  ;; color brightwhite is only defined in a text terminal Emacs.
-  (when (and (eq 'light (frame-parameter nil 'background-mode))
-             (color-defined-p "brightwhite"))
+  ;; For example for 256-color terminal and light background.
+  (when (and (not (display-graphic-p))
+             (color-defined-p "brightwhite")
+             (equal (face-foreground 'org-hide nil t) "white"))
     (set-face-foreground 'org-hide "brightwhite"))
   (add-hook 'org-mode-hook #'f-setup-buffer-org-main))
 
@@ -155,14 +157,15 @@
 (when (f-load-path-add v-d "org-mode/lisp")
   ;; Remove internal Org mode from `load-path'.
   (cl-delete-if (lambda (path) (string-match-p "/lisp/org$" path))
-                load-path))
-(when (f-file-readable-p v-d "org-mode/doc")
-  (add-hook 'Info-mode-hook #'f-setup-feature-info-for-org))
+                load-path)
+  (when (f-file-readable-p v-d "org-mode/doc")
+    (add-hook 'Info-mode-hook #'f-setup-feature-info-for-org)))
 
-;; The rest is unconditional for the case of fall-back to internal Org mode.
+;; This block is unconditional of `f-load-path-add' for the case of
+;; fall-back to internal Org mode.
 (setq-default org-use-extra-keys t) ; "You must set it before loading org."
-(f-feature 'org #'f-setup-feature-org-main)
 (global-set-key (kbd "C-c m o") #'org-mode) ; Mnemonic Org
+(f-feature 'org #'f-setup-feature-org-main)
 
 ;; * Outline mode (major or minor mode)
 ;;   - History

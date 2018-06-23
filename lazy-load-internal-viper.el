@@ -9,13 +9,13 @@
 
 ;; * Viper mode (minor mode)
 ;;   - ESC and Emacs Meta prefix:
-;;     |     | insert-state        | other states                  |
-;;     |-----+---------------------+-------------------------------|
-;;     | ESC | like vi: quit state | like vi: do nothing, ~(ding)~ |
-;;     | C-[ | like vi: quit state | like Emacs: Meta as a prefix  |
-;;     | M-  | Meta as a modifier  | Meta as a modifier            |
+;;     |     | insert-state        | other states                 |
+;;     |-----+---------------------+------------------------------|
+;;     | ESC | like vi: quit state | like vi: do nothing, `ding'  |
+;;     | C-[ | like vi: quit state | like Emacs: Meta as a prefix |
+;;     | M-  | Meta as a modifier  | Meta as a modifier           |
 ;;   - Tests to be made after changes: Go through the description above,
-;;     test the windowed and the terminal Emacs.
+;;     test graphical and terminal Emacs.
 ;;   - History
 ;;     - 2007-08-21 Create
 ;;     - 2008-03-08 Off-topic: Switch from qwertz to Colemak keyboard layout
@@ -40,9 +40,10 @@
   (setq-default viper-want-ctl-h-help t)
   (if (display-graphic-p)
       (define-key viper-insert-basic-map "\e" #'viper-change-state-to-vi)
-    ;; Workaround to avoid that `ESC' (`viper-intercept-ESC-key') in
-    ;; 'vi-state results in the error "viper-ESC: Wrong type argument:
-    ;; stringp, [escape]" when `viper-ESC-key' is the default `[escape]'.
+    ;; Workaround to avoid that in a terminal `ESC'
+    ;; (`viper-intercept-ESC-key') in `vi-state' results in the error
+    ;; "viper-ESC: Wrong type argument: stringp, [escape]" when
+    ;; `viper-ESC-key' is the default `[escape]'.
     (setq-default viper-ESC-key "\e"))
   ;; Revert some Viper mode mappings.
   (dolist (key '("C-u"       ; Keep `universal-argument'. Was
@@ -106,25 +107,27 @@
 ;;     - C-p / C-n :: /usr/bin/less alternative keys (easier for Colemak).
 (defvar v-k nil
   "The keyboard layout in use.
-Use ~(setq v-k \"co\")~ before loading this file if you use the
+Use `(setq v-k \"co\")' before loading this file if you use the
 Colemak keyboard layout. Also convenient on the MessagEase
 keyboard.")
 
 (defun f-pk-nj-for-viper-swap ()
-  "Vim nnoremap p<->k and n<->j for the Colemak keyboard layout."
+  "p<->k and n<->j for the Colemak keyboard layout."
   (interactive)
-  (define-key viper-vi-basic-map "p" #'viper-previous-line) ; Was "k"
-  (define-key viper-vi-basic-map "k" #'viper-put-back)      ; Was "p"
-  (define-key viper-vi-basic-map "n" #'viper-next-line)     ; Was "j"
-  (define-key viper-vi-basic-map "j" #'viper-search-next))  ; Was "n"
+  (pcase-dolist (`(,key ,func) '(("p" viper-previous-line) ; Was k
+                                 ("k" viper-put-back)      ; Was p
+                                 ("n" viper-next-line)     ; Was j
+                                 ("j" viper-search-next))) ; Was n
+    (define-key viper-vi-basic-map (kbd key) func)))
 
 (defun f-pk-nj-for-viper-reset ()
   "Reset of `f-pk-nj-for-viper-swap'."
   (interactive)
-  (define-key viper-vi-basic-map "k" #'viper-previous-line)
-  (define-key viper-vi-basic-map "p" #'viper-put-back)
-  (define-key viper-vi-basic-map "j" #'viper-next-line)
-  (define-key viper-vi-basic-map "n" #'viper-search-next))
+  (pcase-dolist (`(,key ,func) '(("k" viper-previous-line)
+                                 ("p" viper-put-back)
+                                 ("j" viper-next-line)
+                                 ("n" viper-search-next)))
+    (define-key viper-vi-basic-map (kbd key) func)))
 
 (when (equal v-k "co")
   (f-feature 'viper #'f-pk-nj-for-viper-swap))

@@ -33,7 +33,7 @@
 (ad-activate #'provide)
 
 ;; ** First explicit log
-(f-msg "INF" "Initial setup...ongoing")
+(f-msg "INF" "Initial setup...continued")
 
 ;; ** Basic accessibility
 (when (and (display-graphic-p) (eq system-type 'darwin))
@@ -48,12 +48,13 @@
 ;;    - As a side effect of calling some of the functions instrumented with
 ;;      autoload and used later during lazy load do load as few features as
 ;;      possible now.
-;;    - Before changing `load-path' as external features are not allowed
-;;      during setup.
+;;    - Before changing `load-path'. External features from a non-default
+;;      `load-path' during setup would not be a good idea anyway.
 (kbd "")
 (cl-delete-if nil nil)
 (cl-every nil nil)
 (cl-loop repeat 0)
+(make-glyph-code nil)
 (pcase nil)
 
 ;; ** Initial setup finish
@@ -61,6 +62,13 @@
 (f-msg "INF" "Initial setup...done")
 
 ;; * `load-path' and `Info-directory-list'
+(defvar v-f nil
+  "Directory for single-file-packages.
+nil allowed for quick start like `emacs -Q -l emacs.d/main.el'.")
+(defvar v-d nil
+  "Directory with one subdirectory per package.
+nil allowed for quick start like `emacs -Q -l emacs.d/main.el'.")
+
 (defun f-check-directories (symbol-list)
   "Check the directories to be set on the Emacs command line."
   (dolist (symbol symbol-list)
@@ -70,6 +78,7 @@
             (user-error "ERR: `%s' specifies a missing directory %s"
                         symbol value))
         (f-msg "INF" "`%s' not specified" symbol)))))
+
 (f-check-directories '(v-f v-d))
 
 ;; * Lazy load features

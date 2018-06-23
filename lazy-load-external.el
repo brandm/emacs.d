@@ -9,19 +9,45 @@
 ;; * adaptive-wrap (minor mode)
 ;;   - History
 ;;     - 2017-06-11 Create
+(defun f-setup-feature-adaptive-wrap ()
+  (f-msg "INF" "`f-setup-feature-adaptive-wrap'")
+  ;; When 6 it is to indent more than a possibly following hard wrapped
+  ;; indent by 4.
+  (setq-default adaptive-wrap-extra-indent 6))
+
 (when (f-load-path-add v-f)
   (f-auto-loads "adaptive-wrap"
                 #'adaptive-wrap-prefix-mode) ; A `define-minor-mode'
-  ;; When 6 it is to indent more than a possibly following hard wrapped
-  ;; indent by 4.
-  (setq-default adaptive-wrap-extra-indent 6)
-  ;; For when a file is visited with this as a file local variable before
-  ;; the feature has been loaded yet. Necessary even after v0.5.1 which
-  ;; added `integerp' to the `defvar'.
+  ;; For when a file is visited with this as a file local variable possibly
+  ;; before the feature has been loaded yet. Necessary even after v0.5.1
+  ;; which added `integerp' to the `defvar'.
   (put 'adaptive-wrap-extra-indent 'safe-local-variable #'integerp)
-  (f-feature 'adaptive-wrap))
+  (f-feature 'adaptive-wrap #'f-setup-feature-adaptive-wrap))
+
+;; * Bookmarks
+;;   - http://github.com/joodland/bm
+;;   - History
+;;     - 2001-11-12 Create
+;;     - 2018-06-22 Moved to here and refactored
+(defun f-setup-feature-bm ()
+  (f-msg "INF" "`f-setup-feature-bm'")
+  ;; White is not considered to be useful and on most terminals it is a dark
+  ;; white that is hard to distinguish from the background.
+  (when (equal (face-foreground 'bm-face nil t) "White")
+    (set-face-foreground 'bm-face nil)))
+
+(when (f-load-path-add v-d "bm")
+  (f-auto-loads "bm"
+                ;; They are all a `defun'.
+                #'bm-next #'bm-previous #'bm-toggle)
+  (pcase-dolist (`(,key ,func) '(("C-c n" bm-next)
+                                 ("C-c p" bm-previous)
+                                 ("C-c r" bm-toggle)))
+    (global-set-key (kbd key) func))
+  (f-feature 'bm #'f-setup-feature-bm))
 
 ;; * CIDER mode (minor mode)
+;;   - http://github.com/clojure-emacs/cider
 ;;   - History
 ;;     - 2016-06-09 Create
 (when (f-load-path-add v-d "cider")
@@ -30,6 +56,7 @@
   (f-feature 'cider))
 
 ;; * Clojure mode (major mode)
+;;   - http://github.com/clojure-emacs/clojure-mode
 ;;   - History
 ;;     - 2016-05-09 Create
 (when (f-load-path-add v-d "clojure-mode")
@@ -43,6 +70,7 @@
   (f-feature 'clojure-mode))
 
 ;; * dash.el (library)
+;;   - http://github.com/magnars/dash.el
 ;;   - History
 ;;     - 2016-06-09 Create
 (when (f-load-path-add v-d "dash.el")
@@ -62,6 +90,7 @@
              #'f-setup-feature-extempore-mode))
 
 ;; * hy-mode (major mode)
+;;   - http://github.com/hylang/hy-mode
 ;;   - History
 ;;     - 2016-10-10 Create
 (when (f-load-path-add v-d "hy-mode")
@@ -70,6 +99,7 @@
   (f-feature 'hy-mode))
 
 ;; * live-py-mode (minor mode)
+;;   - http://github.com/donkirkby/live-py-plugin
 ;;   - Keep in sync with `f-setup-feature-python'.
 ;;   - History
 ;;     - 2016-09-22 Create
@@ -88,6 +118,7 @@
   (f-feature 'live-py-mode #'f-setup-feature-live-py-mode))
 
 ;; * origami.el (minor mode)
+;;   - http://github.com/gregsexton/origami.el
 ;;   - History
 ;;     - 2017-08-27 Create.
 (when (f-load-path-add v-d "origami.el")
@@ -96,12 +127,14 @@
   (f-feature 'origami))
 
 ;; * outorg (library)
+;;   - http://github.com/alphapapa/outorg
 ;;   - History
 ;;     - 2017-08-27 Create.
 (when (f-load-path-add v-d "outorg")
   (f-feature 'outorg))
 
 ;; * outshine (enhancement for Outline minor mode)
+;;   - http://github.com/alphapapa/outshine
 ;;   - History
 ;;     - 2017-08-27 Create.
 (defun f-setup-feature-outshine ()
@@ -142,11 +175,13 @@
 (when (f-load-path-add v-d "outshine")
   (f-auto-loads "outshine"
                 #'outshine-hook-function) ; A `defun'
+  ;; m is easiest to type after m.
+  (global-set-key (kbd "C-c m m") #'f-outshine-toggle)
   (f-feature 'outshine #'f-setup-feature-outshine))
 
-(global-set-key (kbd "C-c m m") #'f-outshine-toggle) ; Easiest to type
-
 ;; * Matlab mode (major mode)
+;;   - History
+;;     - 2002-03-11 Create
 (when (f-load-path-add v-f)
   (f-auto-loads "matlab"
                 ;; They are all a `defun'.
@@ -167,9 +202,8 @@
 (when (f-load-path-add v-f)
   (f-auto-loads "paredit"
                 #'paredit-mode) ; A `define-minor-mode'
+  (global-set-key (kbd "C-c m p") #'paredit-mode)
   (f-feature 'paredit #'f-setup-feature-paredit))
-
-(global-set-key (kbd "C-c m p") #'paredit-mode)
 
 ;; * queue (library)
 ;;   - History
@@ -177,22 +211,8 @@
 (when (f-load-path-add v-f)
   (f-feature 'queue))
 
-;; * scala-mode2 (major mode)
-;;   - History
-;;     - 2016-07-05 Create
-(when (f-load-path-add v-d "scala-mode2")
-  (f-auto-loads "scala-mode2"
-                ;; A `define-derived-mode'.
-                '("\\.\\(scala\\|sbt\\)\\'" . scala-mode))
-  (f-feature 'scala-mode2))
-
-;; * seq.el (library)
-;;   - History
-;;     - 2016-06-09 Create
-(when (f-load-path-add v-d "seq.el")
-  (f-feature 'seq))
-
 ;; * smartparens mode (minor mode)
+;;   - http://github.com/Fuco1/smartparens
 ;;   - History
 ;;     - 2016-06-09 Create
 (defvar smartparens-mode-map)
@@ -226,11 +246,11 @@
                   lisp-interaction-mode-hook
                   ielm-mode-hook))
     (add-hook hook #'smartparens-mode))
+  (global-set-key (kbd "C-c m s") #'smartparens-mode)
   (f-feature 'smartparens #'f-setup-feature-smartparens))
 
-(global-set-key (kbd "C-c m s") #'smartparens-mode)
-
 ;; * spinner.el (library)
+;;   - http://github.com/Malabarba/spinner.el
 ;;   - History
 ;;     - 2016-06-09 Create
 (when (f-load-path-add v-d "spinner.el")

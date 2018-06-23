@@ -7,19 +7,14 @@
 ;;   - This file contains the base definitions.
 
 ;; * Lazy load features
-(defvar v-f nil
-  "Directory for single-file-packages.
-Allowed to be nil for quick start like ~emacs -Q -l emacs.d/main.el~")
-(defvar v-d nil
-  "Directory with one subdirectory per package.
-Allowed to be nil for quick start like ~emacs -Q -l emacs.d/main.el~")
-
 (defun f-file-readable-p (directory &optional subdirectory)
   "Return path if DIRECTORY with SUBDIRECTORY exists."
   ;; History:
   ;; - 2017-09-07 Factored out from `f-load-path-add'
-  (let ((path (concat (file-name-as-directory directory) subdirectory)))
-    (and (file-readable-p path) path)))
+  (and directory (let ((path (concat (file-name-as-directory
+                                      (expand-file-name directory))
+                                     subdirectory)))
+                   (and (file-readable-p path) path))))
 
 (defun f-load-path-add (directory &optional subdirectory)
   "If DIRECTORY with SUBDIRECTORY exist add it to `load-path'.
@@ -62,12 +57,20 @@ Can be used to force loading at the end of the setup or later")
 
 (defun f-feature (feature &optional setup-feature-function)
   "Track FEATURE and optionally lazy call of SETUP-FEATURE-FUNCTION.
-The feature is the same as in the form ~(provide 'feature)~.
-Unlike `eval-after-load' no other type than feature for FEATURE.
-When the `provide' and the file name of the feature do not match
+
+FEATURE is like in `(provide \\='feature)'. Unlike
+`eval-after-load' no other type than feature for FEATURE. When
+the `provide' and the file name of the feature do not match
 FEATURE is a list with the feature and file name used by
 `f-require-lazy-features' as the first two arguments for
-`require'."
+`require'.
+
+For the case of temporary workarounds or trials with a non-lazy
+load of a feature before calling `f-feature' it should be called
+only after the definition of SETUP-FEATURE-FUNCTION. And only
+after the last steps of the feature setup so that the in this
+case immediate call of SETUP-FEATURE-FUNCTION is still the very
+last step of the feature setup."
   (add-to-list 'v-lazy-features feature t)
   (when setup-feature-function
     (with-eval-after-load (if (consp feature) (car feature) feature)
