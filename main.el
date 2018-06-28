@@ -84,6 +84,7 @@ nil allowed for quick start like `emacs -Q -l emacs.d/main.el'.")
 ;; * Lazy load features
 (f-msg "INF" "Lazy load...")
 (dolist (file '("base-definitions.el"
+                "misc.el"
                 "lazy-load-external.el"
                 "lazy-load-internal-misc.el"
                 "lazy-load-internal-viper.el"))

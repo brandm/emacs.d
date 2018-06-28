@@ -121,10 +121,15 @@
 ;;   - http://github.com/gregsexton/origami.el
 ;;   - History
 ;;     - 2017-08-27 Create.
+(defun f-setup-feature-origami ()
+  (f-msg "INF" "`f-setup-feature-origami'")
+  (define-key
+    origami-mode-map (kbd "C-c TAB") 'origami-recursively-toggle-node))
+
 (when (f-load-path-add v-d "origami.el")
   (f-auto-loads "origami"
                 #'origami-mode) ; A `define-minor-mode'
-  (f-feature 'origami))
+  (f-feature 'origami #'f-setup-feature-origami))
 
 ;; * outorg (library)
 ;;   - http://github.com/alphapapa/outorg
@@ -175,8 +180,7 @@
 (when (f-load-path-add v-d "outshine")
   (f-auto-loads "outshine"
                 #'outshine-hook-function) ; A `defun'
-  ;; m is easiest to type after m.
-  (global-set-key (kbd "C-c m m") #'f-outshine-toggle)
+  (global-set-key (kbd "C-c e e") #'f-outshine-toggle)
   (f-feature 'outshine #'f-setup-feature-outshine))
 
 ;; * Matlab mode (major mode)
@@ -202,7 +206,7 @@
 (when (f-load-path-add v-f)
   (f-auto-loads "paredit"
                 #'paredit-mode) ; A `define-minor-mode'
-  (global-set-key (kbd "C-c m p") #'paredit-mode)
+  (global-set-key (kbd "C-c e p") #'paredit-mode)
   (f-feature 'paredit #'f-setup-feature-paredit))
 
 ;; * queue (library)
@@ -210,6 +214,13 @@
 ;;     - 2016-06-09 Create
 (when (f-load-path-add v-f)
   (f-feature 'queue))
+
+;; * s.el (library)
+;;   - http://github.com/magnars/s.el
+;;   - History
+;;     - 2018-06-24 Create
+(when (f-load-path-add v-d "s.el")
+  (f-feature 's))
 
 ;; * smartparens mode (minor mode)
 ;;   - http://github.com/Fuco1/smartparens
@@ -224,8 +235,8 @@
   (dolist (open '("'" "`"))
     (sp-pair open nil :actions :rem))
   (setq-default sp-highlight-pair-overlay nil)
-  (pcase-dolist (`(,key ,func)
-                 '(("C-c SPC" mark-sexp)               ; No C-M-
+  (pcase-dolist (`( ,key      ,func)
+                 '(("C-c SPC" mark-sexp)               ; No `C-M-'
                    ("C-{"     sp-backward-barf-sexp)   ; Was unused
                    ("C-("     sp-backward-slurp-sexp)  ; Was unused
                    ("C-}"     sp-forward-barf-sexp)    ; Was unused
@@ -246,7 +257,7 @@
                   lisp-interaction-mode-hook
                   ielm-mode-hook))
     (add-hook hook #'smartparens-mode))
-  (global-set-key (kbd "C-c m s") #'smartparens-mode)
+  (global-set-key (kbd "C-c e s") #'smartparens-mode)
   (f-feature 'smartparens #'f-setup-feature-smartparens))
 
 ;; * spinner.el (library)

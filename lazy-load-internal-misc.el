@@ -58,7 +58,7 @@
 ;;     minibuffer-local-isearch-map and previous-history-element (already
 ;;     C-p)
 ;; Move (not copy) M-p/M-n to C-p/C-n in order to avoid the Meta key.
-(pcase-dolist (`(,key ,func)
+(pcase-dolist (`( ,key  ,func)
                '(("M-p" nil)
                  ("C-p" isearch-ring-retreat) ; Was exit isearch
                  ("M-n" nil)
@@ -115,9 +115,9 @@
   ;;   - dark cyan ------- font-lock-constant-face - outline-6 - org-level-6
   ;;   - dark slate blue - font-lock-builtin-face -- outline-7 - org-level-7
   ;;   - VioletRed4 ------ font-lock-string-face --- outline-8 - org-level-8
-  (pcase-dolist (`(,replace ,replacement)
-                 '((org-block default)
-                   (org-table default)
+  (pcase-dolist (`( ,replace    ,replacement)
+                 '((org-block   default)
+                   (org-table   default)
                    (org-level-3 outline-6) ; Replace with outline-5 or -6
                    (org-level-4 outline-7)
                    (org-level-5 org-level-1)
@@ -164,7 +164,7 @@
 ;; This block is unconditional of `f-load-path-add' for the case of
 ;; fall-back to internal Org mode.
 (setq-default org-use-extra-keys t) ; "You must set it before loading org."
-(global-set-key (kbd "C-c m o") #'org-mode) ; Mnemonic Org
+(global-set-key (kbd "C-c e o") #'org-mode)
 (f-feature 'org #'f-setup-feature-org-main)
 
 ;; * Outline mode (major or minor mode)
@@ -183,7 +183,7 @@
          (outline-minor-mode)))) ; Turn on
 
 ;; Mnemonic outLine
-(global-set-key (kbd "C-c m l") #'f-outline-minor-mode-toggle)
+(global-set-key (kbd "C-c e l") #'f-outline-minor-mode-toggle)
 
 ;; * Python mode (major mode)
 ;;   - History
@@ -192,13 +192,13 @@
 
 (defun f-setup-feature-python ()
   (f-msg "INF" "`f-setup-feature-python'")
-  (define-key python-mode-map (kbd "C-c c") #'live-py-mode))
+  (define-key python-mode-map (kbd "C-c i") #'live-py-mode))
 
 (f-feature 'python #'f-setup-feature-python)
 
 ;; * Minibuffer
 ;; Move (not copy) M-p/M-n to C-p/C-n in order to avoid the Meta key.
-(pcase-dolist (`(,key ,func)
+(pcase-dolist (`( ,key  ,func)
                '(("M-p" nil)
                  ("C-p" previous-history-element) ; Was unused
                  ("M-n" nil)
