@@ -98,6 +98,19 @@
                 '("\\.hy\\'" . hy-mode)) ; A `define-derived-mode'
   (f-feature 'hy-mode))
 
+;; * key-chord (minor mode)
+;;   - http://www.emacswiki.org/emacs/KeyChord
+;;   - Conflicts with for instance Emacs Input Methods: "Key chord mode uses
+;;     input-method-function. And so do internationalisation packages (mule,
+;;     quail, etc). Do not expect them to work well together. The last one
+;;     that gets the input-method-function rules."
+;;   - History
+;;     - 2018-06-28 Create
+(when (f-load-path-add v-f)
+  (f-auto-loads "key-chord"
+                #'key-chord-mode) ; A `defun'
+  (f-feature 'key-chord))
+
 ;; * live-py-mode (minor mode)
 ;;   - http://github.com/donkirkby/live-py-plugin
 ;;   - Keep in sync with `f-setup-feature-python'.

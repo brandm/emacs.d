@@ -9,7 +9,7 @@
 
 ;; * Viper mode (minor mode)
 ;;   - ESC and Emacs Meta prefix:
-;;     |     | insert-state        | other states                 |
+;;     |     | `insert-state'      | Other states                 |
 ;;     |-----+---------------------+------------------------------|
 ;;     | ESC | like vi: quit state | like vi: do nothing, `ding'  |
 ;;     | C-[ | like vi: quit state | like Emacs: Meta as a prefix |
@@ -19,9 +19,10 @@
 ;;   - History
 ;;     - 2007-08-21 Create
 ;;     - 2008-03-08 Off-topic: Switch from qwertz to Colemak keyboard layout
-;;     - 2008-11-17 quit viper insert mode with C-c
-;;     - 2008-04-07 Vim nnoremap p<->k and n<->j for Colemak keyboard layout
-;;     - 2013-06-28 ESC or C-[ to quit insert-state (was customized C-c)
+;;     - 2008-04-07 p<->k and n<->j for Colemak keyboard layout
+;;     - 2008-11-17 Quit `insert-state' with `C-c'
+;;     - 2013-06-28 Quit `insert-state' with `C-['
+;;     - 2018-06-28 Quit `insert-state' with key chord like the common `jj'
 (defun f-open-line-for-viper ()
   "For Viper mode: Disable `open-line' except in Org table."
   ;; - History
@@ -45,6 +46,11 @@
     ;; "viper-ESC: Wrong type argument: stringp, [escape]" when
     ;; `viper-ESC-key' is the default `[escape]'.
     (setq-default viper-ESC-key "\e"))
+  (when (fboundp #'key-chord-mode)
+    (require 'key-chord)
+    (key-chord-define
+     viper-insert-basic-map "hh" #'viper-change-state-to-vi))
+  (add-hook 'viper-insert-state-hook #'f-setup-hook-viper-insert-state)
   ;; Revert some Viper mode mappings.
   (dolist (key '("C-u"       ; Keep `universal-argument'. Was
                              ; `viper-scroll-down'. In Viper mode use "C-b
@@ -55,7 +61,15 @@
                              ; `viper-next-destructive-command'.
     (define-key viper-vi-basic-map (kbd key) nil))
   (define-key viper-vi-global-user-map "gg" #'beginning-of-buffer)
-  (define-key viper-vi-basic-map [remap open-line] #'f-open-line-for-viper))
+  (define-key viper-vi-basic-map [remap open-line] #'f-open-line-for-viper)
+  (when (equal v-k "co") (f-pk-nj-for-viper-swap)))
+
+(defun f-setup-hook-viper-insert-state ()
+  (when (fboundp #'key-chord-input-method)
+    ;; Refresh the variable `input-method-function' as it seems to be set to
+    ;; nil for example when the current window changes the buffer with for
+    ;; example `bs-show' or `ibs-select'.
+    (setq input-method-function #'key-chord-input-method)))
 
 (setq-default viper-mode t
               viper-inhibit-startup-message t
@@ -128,9 +142,6 @@ keyboard.")
                                  ("j" viper-next-line)
                                  ("n" viper-search-next)))
     (define-key viper-vi-basic-map (kbd key) func)))
-
-(when (equal v-k "co")
-  (f-feature 'viper #'f-pk-nj-for-viper-swap))
 
 ;; * File config
 ;;   Local Variables:
