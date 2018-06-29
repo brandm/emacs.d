@@ -38,10 +38,15 @@
 ;; ** Basic accessibility
 (when (and (display-graphic-p) (eq system-type 'darwin))
   (setq-default
-   ;; | Keyboard key   | Emacs action | Comment                         |
-   ns-command-modifier   'control
-   ns-option-modifier    'none        ; Leave the OS insert AltGr-chars
-   ns-control-modifier   'meta))
+   ;; Mapping of keyboard keys to Emacs action. From the outer to the inner
+   ;; keys. Commented out where it is the default behavior, with the same or
+   ;; an equivalent value.
+   ;; . ns-control-modifier       'control
+   ;; . ns-right-control-modifier 'control
+   ;; . ns-alternate-modifier     'meta
+   ns-right-alternate-modifier    'none      ; Let the OS do AltGr-chars
+   ns-command-modifier            'control   ; Alternative for thumb
+   ns-right-command-modifier      'control)) ; Alternative for thumb
 (ignore-errors (kill-buffer "*scratch*")) ; Allow it to be already killed
 
 ;; ** Load (non-lazy) of the features used during setup
