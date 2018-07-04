@@ -31,7 +31,14 @@
   (if (and (eq major-mode 'org-mode) (org-at-table-p) org-special-ctrl-o)
       ;; From `org-open-line' that remaps the keys for `open-line'.
       (org-table-insert-row)
-    (user-error "ERR: Get used to \"O\" (S-o) to behave vi-compatible.")))
+    (user-error "ERR: Get used to `O' (`S-o') to behave vi-compatible.")))
+
+(defun f-find-file-for-viper ()
+  "For Viper mode: Disable `find-file' and `ido-find-file'."
+  ;; - History
+  ;;   - 2018-07-01 Create
+  (interactive)
+  (user-error "ERR: Get used to `: e <SPC>' to behave vi-compatible."))
 
 (defun f-setup-feature-viper ()
   (f-msg "INF" "`f-setup-feature-viper'")
@@ -46,30 +53,45 @@
     ;; "viper-ESC: Wrong type argument: stringp, [escape]" when
     ;; `viper-ESC-key' is the default `[escape]'.
     (setq-default viper-ESC-key "\e"))
-  (when (fboundp #'key-chord-mode)
+  (when (fboundp #'key-chord-mode) ; `autoload' binding
     (require 'key-chord)
     (key-chord-define
      viper-insert-basic-map "hh" #'viper-change-state-to-vi))
   (add-hook 'viper-insert-state-hook #'f-setup-hook-viper-insert-state)
-  ;; Revert some Viper mode mappings.
-  (dolist (key '("C-u"       ; Keep `universal-argument'. Was
-                             ; `viper-scroll-down'. In Viper mode use "C-b
-                             ; C-d" instead of C-u.
-                 "C-c /"     ; Keep `org-sparse-tree' in Org mode. Was
-                             ; `viper-toggle-search-style'.
-                 "C-c M-n")) ; Keep `cider-repl-set-ns' in Cider mode. Was
-                             ; `viper-next-destructive-command'.
-    (define-key viper-vi-basic-map (kbd key) nil))
+  (add-hook 'viper-vi-state-hook     #'f-setup-hook-viper-vi-state)
+  (add-hook 'viper-emacs-state-hook  #'f-setup-hook-viper-emacs-state)
   (define-key viper-vi-global-user-map "gg" #'beginning-of-buffer)
-  (define-key viper-vi-basic-map [remap open-line] #'f-open-line-for-viper)
+  ;; Revert some Viper mode mappings.
+  (dolist (key '(;; Keep `universal-argument'. Was `viper-scroll-down'. In
+                 ;; Viper mode use `C-b C-d' instead of `C-u'.
+                 "C-u"
+                 ;; Keep `org-sparse-tree' in Org mode. Was
+                 ;; `viper-toggle-search-style'.
+                 "C-c /"
+                 ;; Keep `cider-repl-set-ns' in Cider mode. Was
+                 ;; `viper-next-destructive-command'.
+                 "C-c M-n"))
+    (define-key viper-vi-basic-map (kbd key) nil))
+  (pcase-dolist (`( ,key                  ,func)
+                 '(([remap open-line]     f-open-line-for-viper)
+                   ([remap find-file]     f-find-file-for-viper)
+                   ([remap ido-find-file] f-find-file-for-viper)))
+    (define-key viper-vi-basic-map key func))
   (when (equal v-k "co") (f-pk-nj-for-viper-swap)))
 
 (defun f-setup-hook-viper-insert-state ()
-  (when (fboundp #'key-chord-input-method)
-    ;; Refresh the variable `input-method-function' as it seems to be set to
-    ;; nil for example when the current window changes the buffer with for
-    ;; example `bs-show' or `ibs-select'.
-    (setq input-method-function #'key-chord-input-method)))
+  (when (featurep 'key-chord)
+    ;; Refresh the variable `input-method-function' as it seems to be reset
+    ;; to nil for example when the current window changes the buffer with
+    ;; for example `bs-show' or `ibs-select'.
+    (setq input-method-function #'key-chord-input-method))
+  (when (featurep 'god-mode) (god-local-mode-pause)))
+
+(defun f-setup-hook-viper-vi-state ()
+  (when (featurep 'god-mode) (god-local-mode-resume)))
+
+(defun f-setup-hook-viper-emacs-state ()
+  (when (featurep 'god-mode) (god-local-mode-resume)))
 
 (setq-default viper-mode t
               viper-inhibit-startup-message t

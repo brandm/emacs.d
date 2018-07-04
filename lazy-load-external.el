@@ -89,6 +89,16 @@
   (f-feature '(extempore-mode "extempore.el")
              #'f-setup-feature-extempore-mode))
 
+;; * God mode (minor mode)
+;;   - http://github.com/chrisdone/god-mode
+;;   - History
+;;     - 2018-06-30 Create
+(when (f-load-path-add v-d "god-mode")
+  (f-auto-loads "god-mode"
+                ;; They are all a `defun'.
+                #'god-mode #'god-local-mode)
+  (f-feature 'god-mode))
+
 ;; * hy-mode (major mode)
 ;;   - http://github.com/hylang/hy-mode
 ;;   - History

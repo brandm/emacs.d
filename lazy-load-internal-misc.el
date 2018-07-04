@@ -73,7 +73,7 @@
   (f-msg "INF" "%s" (org-version nil t))
   (setq-default
    org-cycle-global-at-bob t
-   ;; Like outshine config. In Viper mode available only in Emacs state (E).
+   ;; Like outshine config.
    org-use-speed-commands t)
   ;; For example for 256-color terminal and light background.
   (when (and (not (display-graphic-p))
