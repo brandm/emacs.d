@@ -43,6 +43,20 @@
 (defun f-setup-feature-viper ()
   (f-msg "INF" "`f-setup-feature-viper'")
   (setq-default viper-suppress-input-method-change-message t)
+  (when (featurep 'god-mode)
+    (dolist (hook '(viper-insert-state-hook
+                    viper-replace-state-hook
+                    viper-vi-state-hook
+                    viper-emacs-state-hook))
+      (add-hook hook #'f-god-mode-refresh)))
+  (when (featurep 'key-chord)
+    (key-chord-define
+     viper-insert-basic-map "hh" #'viper-change-state-to-vi)
+    (dolist (hook '(viper-insert-state-hook
+                    viper-replace-state-hook
+                    viper-vi-state-hook
+                    viper-emacs-state-hook))
+      (add-hook hook #'f-key-chord-refresh)))
   ;; After the feature "viper" has been provided to make
   ;; `viper-want-ctl-h-help' keep the value t.
   (setq-default viper-want-ctl-h-help t)
@@ -53,13 +67,6 @@
     ;; "viper-ESC: Wrong type argument: stringp, [escape]" when
     ;; `viper-ESC-key' is the default `[escape]'.
     (setq-default viper-ESC-key "\e"))
-  (when (fboundp #'key-chord-mode) ; `autoload' binding
-    (require 'key-chord)
-    (key-chord-define
-     viper-insert-basic-map "hh" #'viper-change-state-to-vi))
-  (add-hook 'viper-insert-state-hook #'f-setup-hook-viper-insert-state)
-  (add-hook 'viper-vi-state-hook     #'f-setup-hook-viper-vi-state)
-  (add-hook 'viper-emacs-state-hook  #'f-setup-hook-viper-emacs-state)
   (define-key viper-vi-global-user-map "gg" #'beginning-of-buffer)
   ;; Revert some Viper mode mappings.
   (dolist (key '(;; Keep `universal-argument'. Was `viper-scroll-down'. In
@@ -77,21 +84,8 @@
                    ([remap find-file]     f-find-file-for-viper)
                    ([remap ido-find-file] f-find-file-for-viper)))
     (define-key viper-vi-basic-map key func))
-  (when (equal v-k "co") (f-pk-nj-for-viper-swap)))
-
-(defun f-setup-hook-viper-insert-state ()
-  (when (featurep 'key-chord)
-    ;; Refresh the variable `input-method-function' as it seems to be reset
-    ;; to nil for example when the current window changes the buffer with
-    ;; for example `bs-show' or `ibs-select'.
-    (setq input-method-function #'key-chord-input-method))
-  (when (featurep 'god-mode) (god-local-mode-pause)))
-
-(defun f-setup-hook-viper-vi-state ()
-  (when (featurep 'god-mode) (god-local-mode-resume)))
-
-(defun f-setup-hook-viper-emacs-state ()
-  (when (featurep 'god-mode) (god-local-mode-resume)))
+  (when (equal v-k "co")
+    (f-pk-nj-for-viper-swap)))
 
 (setq-default viper-mode t
               viper-inhibit-startup-message t

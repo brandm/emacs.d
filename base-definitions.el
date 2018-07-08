@@ -7,6 +7,14 @@
 ;;   - This file contains the base definitions.
 
 ;; * Lazy load features
+(defvar v-f nil
+  "Directory for single-file-packages.
+nil allowed for quick start like `emacs -Q -l emacs.d/main.el'.")
+
+(defvar v-d nil
+  "Directory with one subdirectory per package.
+nil allowed for quick start like `emacs -Q -l emacs.d/main.el'.")
+
 (defun f-file-readable-p (directory &optional subdirectory)
   "Return path if DIRECTORY with SUBDIRECTORY exists."
   ;; History:

@@ -11,15 +11,17 @@
 ;;     loading as possible, then not earlier the first explicit log and then
 ;;     the basic accessibility for a better interaction in case of a failure
 ;;     in the more complicated rest following.
-;;   - Want 1) to see the *messages* buffer on top and 2) no scratch buffer.
+;;   - Want to see the *messages* buffer on top and no scratch buffer.
 ;; ** Timing
 (let ((t0 (float-time)))
-  (defun f-msg (level-str format-str &rest args)
+  (defun f-msg (level-str &optional format-str &rest args)
     "`message' with time since start."
-    (message "%s %.3f: %s"
-             level-str
-             (- (float-time) t0)
-             (apply #'format format-str args))))
+    (if format-str
+        (message "%s %.3f: %s"
+                 level-str
+                 (- (float-time) t0)
+                 (apply #'format format-str args))
+      (message "%s %.3f" level-str (- (float-time) t0)))))
 
 ;; ** Implicit logging of feature loading
 (defun load-err (feature)
@@ -63,17 +65,15 @@
 (pcase nil)
 
 ;; ** Initial setup finish
-(setq v-provide-advice #'load-err)
 (f-msg "INF" "Initial setup...done")
 
-;; * `load-path' and `Info-directory-list'
-(defvar v-f nil
-  "Directory for single-file-packages.
-nil allowed for quick start like `emacs -Q -l emacs.d/main.el'.")
-(defvar v-d nil
-  "Directory with one subdirectory per package.
-nil allowed for quick start like `emacs -Q -l emacs.d/main.el'.")
+;; * Base definitions
+(let ((v-provide-advice #'load-err))
+  (load-file (concat (file-name-directory load-file-name)
+                     "base-definitions.el"))
+  (f-msg "INF"))
 
+;; * Check and report `v-f' and `v-d'
 (defun f-check-directories (symbol-list)
   "Check the directories to be set on the Emacs command line."
   (dolist (symbol symbol-list)
@@ -84,20 +84,23 @@ nil allowed for quick start like `emacs -Q -l emacs.d/main.el'.")
                         symbol value))
         (f-msg "INF" "`%s' not specified" symbol)))))
 
-(f-check-directories '(v-f v-d))
+(let ((v-provide-advice #'load-err))
+  (f-check-directories '(v-f v-d)))
+
+;; * Load (non-lazy) features
+(load-file (concat (file-name-directory load-file-name) "load-external.el"))
+(f-msg "INF")
 
 ;; * Lazy load features
-(f-msg "INF" "Lazy load...")
-(dolist (file '("base-definitions.el"
-                "misc.el"
-                "lazy-load-external.el"
-                "lazy-load-internal-misc.el"
-                "lazy-load-internal-viper.el"))
-  (load-file (concat (file-name-directory load-file-name) file)))
-(setq v-provide-advice #'load-inf)
-(f-msg "INF" "Lazy load...done")
+(let ((v-provide-advice #'load-err))
+  (dolist (file '("misc.el"
+                  "lazy-load-external.el"
+                  "lazy-load-internal-misc.el"
+                  "lazy-load-internal-viper.el"))
+    (load-file (concat (file-name-directory load-file-name) file))
+    (f-msg "INF")))
 
-;; * Non-lazy load features
+;; * Load (non-lazy) features
 ;; `with-temp-buffer' to make viper-want-ctl-h-help keep the value t
 ;; although the scratch buffer has been killed before ~(require 'viper)~.
 (with-temp-buffer (require 'viper)) ; How to lazy load without `require'?

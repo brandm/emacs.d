@@ -9,6 +9,11 @@
 ;; * Keyboard
 ;;   - History:
 ;;     - 2018-06-24 Create
+(pcase-dolist (`(,key ,func) '(("C-c c" event-apply-control-modifier)
+                               ("C-c m" event-apply-meta-modifier)
+                               ("C-c s" event-apply-shift-modifier)))
+  (define-key key-translation-map (kbd key) func))
+
 (defun f-insert-char-U+00C4 () (interactive) (f-insert-char ?\u00C4))
 (defun f-insert-char-U+00D6 () (interactive) (f-insert-char ?\u00D6))
 (defun f-insert-char-U+00DC () (interactive) (f-insert-char ?\u00DC))
@@ -28,10 +33,6 @@
                                ("C-c w o" f-insert-char-U+00F6)
                                ("C-c w u" f-insert-char-U+00FC)))
   (global-set-key (kbd key) func))
-(pcase-dolist (`(,key ,func) '(("C-c c" event-apply-control-modifier)
-                               ("C-c m" event-apply-meta-modifier)
-                               ("C-c s" event-apply-shift-modifier)))
-  (define-key key-translation-map (kbd key) func))
 
 ;; * File config
 ;;   Local Variables:
