@@ -21,9 +21,24 @@
   (f-god-mode-refresh)
   (add-hook 'window-configuration-change-hook #'f-god-mode-refresh))
 
+;; * hydra
+;;   - http://github.com/abo-abo/hydra
+;;   - History
+;;     - 2018-07-11 Create
+(when (f-load-path-add v-d "hydra")
+  (require 'hydra)
+  ;; This mimics and obsoletes ibs.el used with `C-c v' (`ibs-select') and
+  ;; `v' (`ibs-next-buffer'). ibs.el was used with the default `ibs-timeout
+  ;; 4'.
+  (defhydra hydra-switch-buffer (:timeout 4)
+    ;; For example `previous-buffer' or `bs-cycle-previous'.
+    ("v" previous-buffer))
+  (global-set-key (kbd "C-c v") 'hydra-switch-buffer/previous-buffer))
+
 ;; * key-chord (minor mode)
 ;;   - http://www.emacswiki.org/emacs/KeyChord
-;;   - Conflicts with for instance Emacs Input Methods: "Key chord mode uses
+;;   - Conflicts with other functionality that uses `input-method-function',
+;;     for example Emacs Input Methods or ibs.el. "Key chord mode uses
 ;;     input-method-function. And so do internationalisation packages (mule,
 ;;     quail, etc). Do not expect them to work well together. The last one
 ;;     that gets the input-method-function rules."
