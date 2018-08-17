@@ -38,36 +38,27 @@
 ;; * key-chord (minor mode)
 ;;   - http://www.emacswiki.org/emacs/KeyChord
 ;;   - Conflicts with other functionality that uses `input-method-function',
-;;     for example Emacs Input Methods or ibs.el. "Key chord mode uses
-;;     input-method-function. And so do internationalisation packages (mule,
-;;     quail, etc). Do not expect them to work well together. The last one
-;;     that gets the input-method-function rules."
+;;     for example Emacs Input Methods or ibs.el. key-chord.el: "Key chord
+;;     mode uses input-method-function. And so do internationalisation
+;;     packages (mule, quail, etc). Do not expect them to work well
+;;     together. The last one that gets the input-method-function rules."
 ;;   - History
-;;     - 2018-06-28 Create
-(defvar v-key-chord-control "en"
+;;     - 2018-06-28 Create with value "en"
+;;     - 2018-08-13 Change value to "[["
+(defvar v-key-chord-control "[["
   "Key chord for `event-apply-control-modifier'.
-The key chord is optimized for `vi-state' and the Colemak
-keyboard layout (where `en' is QWERTY `jk').")
-
-(defun f-key-chord-refresh ()
-  ;; Refresh `input-method-function' as it seems to be reset to nil for
-  ;; example when the current window changes the buffer with for example
-  ;; `bs-show' or `ibs-select'.
-  (setq input-method-function #'key-chord-input-method)
-  (cond ((and (boundp 'viper-current-state)
-              (memq viper-current-state '(insert-state replace-state)))
-         (key-chord-define key-translation-map v-key-chord-control nil)
-         (key-chord-define-global v-key-chord-control nil))
-        (t
-         (key-chord-define key-translation-map v-key-chord-control
-                           #'event-apply-control-modifier)
-         (key-chord-define-global v-key-chord-control
-                                  #'event-apply-control-modifier))))
+When \"[[\": `[[' for Control and `[[[' for Meta or ESC (Meta or
+ESC via `[[-[' for `C-[' for ESC).")
 
 (when (f-load-path-add v-f)
   (require 'key-chord)
-  (f-key-chord-refresh)
-  (add-hook 'window-configuration-change-hook #'f-key-chord-refresh))
+  (setq-default key-chord-two-keys-delay 0.15 ; Default 0.1
+                key-chord-one-key-delay  0.25 ; Default 0.2
+                input-method-function #'key-chord-input-method)
+  (key-chord-define key-translation-map
+                    v-key-chord-control #'event-apply-control-modifier)
+  (key-chord-define-global
+   v-key-chord-control #'event-apply-control-modifier))
 
 ;; * File config
 ;;   Local Variables:

@@ -22,7 +22,8 @@
 ;;     - 2008-04-07 p<->k and n<->j for Colemak keyboard layout
 ;;     - 2008-11-17 Quit `insert-state' with `C-c'
 ;;     - 2013-06-28 Quit `insert-state' with `C-['
-;;     - 2018-06-28 Quit `insert-state' with key chord like the common `jj'
+;;     - 2018-06-28 Quit `insert-state' with `hh' (like the common `jj')
+;;     - 2018-08-13 Quit `insert-state' with `[[[' ([[-[ for C-[ for ESC)
 (defun f-open-line-for-viper ()
   "For Viper mode: Disable `open-line' except in Org table."
   ;; - History
@@ -42,6 +43,7 @@
 
 (defun f-setup-feature-viper ()
   (f-msg "INF" "`f-setup-feature-viper'")
+  ;; For example for `default-input-method' "german-prefix".
   (setq-default viper-suppress-input-method-change-message t)
   (when (featurep 'god-mode)
     (dolist (hook '(viper-insert-state-hook
@@ -49,24 +51,48 @@
                     viper-vi-state-hook
                     viper-emacs-state-hook))
       (add-hook hook #'f-god-mode-refresh)))
-  (when (featurep 'key-chord)
-    (key-chord-define
-     viper-insert-basic-map "hh" #'viper-change-state-to-vi)
-    (dolist (hook '(viper-insert-state-hook
-                    viper-replace-state-hook
-                    viper-vi-state-hook
-                    viper-emacs-state-hook))
-      (add-hook hook #'f-key-chord-refresh)))
   ;; After the feature "viper" has been provided to make
   ;; `viper-want-ctl-h-help' keep the value t.
   (setq-default viper-want-ctl-h-help t)
-  (if (display-graphic-p)
-      (define-key viper-insert-basic-map "\e" #'viper-change-state-to-vi)
-    ;; Workaround to avoid that in a terminal `ESC'
-    ;; (`viper-intercept-ESC-key') in `vi-state' results in the error
-    ;; "viper-ESC: Wrong type argument: stringp, [escape]" when
-    ;; `viper-ESC-key' is the default `[escape]'.
-    (setq-default viper-ESC-key "\e"))
+
+  ;; Quit `insert-state'.
+  ;; - To examine the behavior in `insert-state' and to compare it with
+  ;;   `vi-state':
+  ;;   - Use the arrow keys (which are an ESC-sequence when in a terminal)
+  ;;     to move point in the minibuffer (or in a buffer), or to browse the
+  ;;     history in the minibuffer.
+  ;;   - Use `ESC', `C-h' and `C-x @ c [' to quit `insert-state' (`C-x @ c
+  ;;     [' translates to `\e' aka `C-h' with an updated function
+  ;;     `event-apply-modifier'):
+  ;;     - Table legend:
+  ;;       - Column with header "Config":
+  ;;         - Value "none": None of the below.
+  ;;         - Value "viper-ESC-key":
+  ;;           ;; Workaround to avoid that if in `vi-state' and in a
+  ;;           ;; terminal then `ESC' (`viper-intercept-ESC-key') results in
+  ;;           ;; the error "viper-ESC: Wrong type argument: stringp,
+  ;;           ;; [escape]" when `viper-ESC-key' is the default `[escape]'.
+  ;;           (setq-default viper-ESC-key "\e")
+  ;;         - Value "map":
+  ;;           (define-key viper-insert-basic-map
+  ;;             "\e" #'viper-change-state-to-vi)
+  ;;       - Field content:
+  ;;         - quit: Quits `insert-state'.
+  ;;         - ESC-: Stays in `insert-state', displays "ESC-" and waits for
+  ;;           further key input.
+  ;;     - The table:
+  ;;       | Config        | Display   | ESC  | C-h  | C-x @ c [ |
+  ;;       |---------------+-----------+------+------+-----------|
+  ;;       | none          | graphical | quit | ESC- | ESC-      |
+  ;;       | none          | terminal  | quit | quit | ESC-      |
+  ;;       | viper-ESC-key | graphical | quit | ESC- | ESC-      |
+  ;;       | viper-ESC-key | terminal  | quit | quit | ESC-      |
+  ;;       | map           | both      | quit | quit | quit      |
+  ;; - See also the function `viper-ESC-keyseq-timeout'.
+  ;; - For an updated function `event-apply-modifier' see
+  ;;   http://lists.gnu.org/archive/html/help-gnu-emacs/2018-07/msg00294.html
+  (define-key viper-insert-basic-map "\e" #'viper-change-state-to-vi)
+
   (define-key viper-vi-global-user-map "gg" #'beginning-of-buffer)
   ;; Revert some Viper mode mappings.
   (dolist (key '(;; Keep `universal-argument'. Was `viper-scroll-down'. In
@@ -89,7 +115,7 @@
 
 (setq-default viper-mode t
               viper-inhibit-startup-message t
-              viper-expert-level 3)
+              viper-expert-level 5)
 (f-feature 'viper #'f-setup-feature-viper)
 
 ;; * Colemak keyboard layout remapping
