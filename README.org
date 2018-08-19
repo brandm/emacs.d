@@ -20,6 +20,9 @@ messages buffer for learning purposes.
 
 * Usage examples
 
+If you don't want Viper mode (the vi emulation) remove the line containing
+~(require 'viper)~ from ~main.el~.
+
 For a quick first trial:
 #+BEGIN_SRC shell :eval no
   cd <where_you_have_your_git_clones>
