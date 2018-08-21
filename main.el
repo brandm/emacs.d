@@ -30,9 +30,10 @@
 (defun load-inf (feature)
   (f-msg "INF" "Loaded feature %S" feature))
 (defvar v-provide-advice #'load-inf)
-(defadvice provide (after advice-provide-after)
-  (funcall v-provide-advice feature))
-(ad-activate #'provide)
+(defun f-provide-advice (around-function feature &optional subfeatures)
+  (prog1 (funcall around-function feature subfeatures)
+    (funcall v-provide-advice feature)))
+(advice-add 'provide :around #'f-provide-advice)
 
 ;; ** First explicit log
 (f-msg "INF" "Initial setup...continued")
