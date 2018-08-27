@@ -31,6 +31,7 @@
   (f-msg "INF" "Loaded feature %S" feature))
 (defvar v-provide-advice #'load-inf)
 (defun f-provide-advice (around-function feature &optional subfeatures)
+  "Adds a log to `provide'."
   (prog1 (funcall around-function feature subfeatures)
     (funcall v-provide-advice feature)))
 (advice-add 'provide :around #'f-provide-advice)
