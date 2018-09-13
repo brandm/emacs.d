@@ -117,6 +117,15 @@
                 'live-py-mode) ; A `define-minor-mode'
   (f-feature 'live-py-mode #'f-setup-feature-live-py-mode))
 
+;; * orgaggregate
+;;   - http://github.com/tbanel/orgaggregate
+;;   - History
+;;     - 2018-08-28 Create
+(when (f-load-path-add v-d "orgaggregate")
+  (f-auto-loads "orgtbl-aggregate"
+                #'org-dblock-write:aggregate) ; A `defun'
+  (f-feature 'orgtbl-aggregate))
+
 ;; * origami.el (minor mode)
 ;;   - http://github.com/gregsexton/origami.el
 ;;   - History
