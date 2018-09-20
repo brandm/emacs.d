@@ -35,22 +35,6 @@
     ("v" previous-buffer))
   (global-set-key (kbd "C-c v") 'hydra-switch-buffer/previous-buffer))
 
-;; * key-chord (minor mode)
-;;   - http://www.emacswiki.org/emacs/KeyChord
-;;   - Conflicts with other functionality that uses `input-method-function',
-;;     for example Emacs Input Methods or ibs.el. key-chord.el: "Key chord
-;;     mode uses input-method-function. And so do internationalisation
-;;     packages (mule, quail, etc). Do not expect them to work well
-;;     together. The last one that gets the input-method-function rules."
-;;   - History
-;;     - 2018-06-28 Create with value "en"
-;;     - 2018-08-13 Change value to "[["
-(when (f-load-path-add v-f)
-  (require 'key-chord)
-  (setq-default key-chord-two-keys-delay 0.15 ; Default 0.1
-                key-chord-one-key-delay  0.25 ; Default 0.2
-                input-method-function #'key-chord-input-method))
-
 ;; * File config
 ;;   Local Variables:
 ;;     coding: us-ascii-unix
