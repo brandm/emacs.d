@@ -18,6 +18,13 @@ and setting up of each feature is postponed to when it is actually needed
 the first time. At the time when it is really loaded there is a log to the
 messages buffer for learning purposes.
 
+Opionally there is also a special key binding to use ~;~ as a Control
+prefix, ~; [~ as a ESC/Meta prefix and ~[~ to quit the insert-state in Viper
+mode. This makes ~; <anything>~ work as ~C-<anything>~ and ~; [ <anything>~
+work as ~C-[ <anything>~ which is ~ESC <anything>~ which is ~M-<anything>~.
+To insert a literal ~;~ or ~[~ use ~C-q ;~ (now also ~; q ;~) or ~C-q [~
+(now also ~; q [~).
+
 * Usage examples
 
 If you don't want Viper mode (the vi emulation) remove the line containing
@@ -38,8 +45,12 @@ With external packages organized in two main directories:
         -l '<dir_with_one_subdir_per_package>/emacs.d/main.el'
 #+END_SRC
 
-If you use the Colemak keyboard layout together with Viper mode like me add
-~v-k "co"~ to the ~setq~ command above.
+If you use the Colemak keyboard layout together with Viper mode and want to
+swap ~p~ <-> ~k~ and ~n~ <-> ~j~ like me add ~v-k "co"~ to the ~setq~
+command above.
+
+If you want to try the special key binding add ~v-s t~ to the ~setq~ command
+above.
 
 - http://en.wikipedia.org/wiki/Colemak
 

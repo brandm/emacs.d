@@ -15,6 +15,9 @@ nil allowed for quick start like `emacs -Q -l emacs.d/main.el'.")
   "Directory with one subdirectory per package.
 nil allowed for quick start like `emacs -Q -l emacs.d/main.el'.")
 
+(defvar v-s nil
+  "Use special key bindings.")
+
 (defun f-file-readable-p (directory &optional subdirectory)
   "Return path if DIRECTORY with SUBDIRECTORY exists."
   ;; History:

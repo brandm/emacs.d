@@ -9,11 +9,18 @@
 ;; * Keyboard
 ;;   - History:
 ;;     - 2018-06-24 Create
+;;     - 2018-09-13 `;' for Control and `;[' for ESC/Meta
 ;; ** Misc
-(setq echo-keystrokes 0.01)
-(pcase-dolist (`(,key ,func) '(("C-c c" event-apply-control-modifier)
-                               ("C-c m" event-apply-meta-modifier)
-                               ("C-c s" event-apply-shift-modifier)))
+(setq echo-keystrokes 0.001)
+(pcase-dolist (`(,key ,func)
+               (append (if v-s
+                           ;; `;' for Control prefix and `;[' for ESC/Meta
+                           ;; prefix. To insert a literal `;' use `C-q ;'.
+                           '((";" event-apply-control-modifier))
+                         nil)
+                       '(("C-c c" event-apply-control-modifier)
+                         ("C-c m" event-apply-meta-modifier)
+                         ("C-c s" event-apply-shift-modifier))))
   (define-key key-translation-map (kbd key) func))
 
 (defun f-event-apply-modifier-advice (event symbol lshiftby prefix)

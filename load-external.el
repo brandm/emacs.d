@@ -45,20 +45,11 @@
 ;;   - History
 ;;     - 2018-06-28 Create with value "en"
 ;;     - 2018-08-13 Change value to "[["
-(defvar v-key-chord-control "[["
-  "Key chord for `event-apply-control-modifier'.
-When \"[[\": `[[' for Control and `[[[' for Meta or ESC (Meta or
-ESC via `[[-[' for `C-[' for ESC).")
-
 (when (f-load-path-add v-f)
   (require 'key-chord)
   (setq-default key-chord-two-keys-delay 0.15 ; Default 0.1
                 key-chord-one-key-delay  0.25 ; Default 0.2
-                input-method-function #'key-chord-input-method)
-  (key-chord-define key-translation-map
-                    v-key-chord-control #'event-apply-control-modifier)
-  (key-chord-define-global
-   v-key-chord-control #'event-apply-control-modifier))
+                input-method-function #'key-chord-input-method))
 
 ;; * File config
 ;;   Local Variables:

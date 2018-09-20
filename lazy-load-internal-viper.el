@@ -24,6 +24,7 @@
 ;;     - 2013-06-28 Quit `insert-state' with `C-['
 ;;     - 2018-06-28 Quit `insert-state' with `hh' (like the common `jj')
 ;;     - 2018-08-13 Quit `insert-state' with `[[[' ([[-[ for C-[ for ESC)
+;;     - 2018-09-13 Quit `insert-state' with `['
 (defun f-open-line-for-viper ()
   "For Viper mode: Disable `open-line' except in Org table."
   ;; - History
@@ -54,45 +55,23 @@
   ;; After the feature "viper" has been provided to make
   ;; `viper-want-ctl-h-help' keep the value t.
   (setq-default viper-want-ctl-h-help t)
-
-  ;; Quit `insert-state'.
-  ;; - To examine the behavior in `insert-state' and to compare it with
-  ;;   `vi-state':
-  ;;   - Use the arrow keys (which are an ESC-sequence when in a terminal)
-  ;;     to move point in the minibuffer (or in a buffer), or to browse the
-  ;;     history in the minibuffer.
-  ;;   - Use `ESC', `C-h' and `C-x @ c [' to quit `insert-state' (`C-x @ c
-  ;;     [' translates to `\e' aka `C-h' with an updated function
-  ;;     `event-apply-modifier'):
-  ;;     - Table legend:
-  ;;       - Column with header "Config":
-  ;;         - Value "none": None of the below.
-  ;;         - Value "viper-ESC-key":
-  ;;           ;; Workaround to avoid that if in `vi-state' and in a
-  ;;           ;; terminal then `ESC' (`viper-intercept-ESC-key') results in
-  ;;           ;; the error "viper-ESC: Wrong type argument: stringp,
-  ;;           ;; [escape]" when `viper-ESC-key' is the default `[escape]'.
-  ;;           (setq-default viper-ESC-key "\e")
-  ;;         - Value "map":
-  ;;           (define-key viper-insert-basic-map
-  ;;             "\e" #'viper-change-state-to-vi)
-  ;;       - Field content:
-  ;;         - quit: Quits `insert-state'.
-  ;;         - ESC-: Stays in `insert-state', displays "ESC-" and waits for
-  ;;           further key input.
-  ;;     - The table:
-  ;;       | Config        | Display   | ESC  | C-h  | C-x @ c [ |
-  ;;       |---------------+-----------+------+------+-----------|
-  ;;       | none          | graphical | quit | ESC- | ESC-      |
-  ;;       | none          | terminal  | quit | quit | ESC-      |
-  ;;       | viper-ESC-key | graphical | quit | ESC- | ESC-      |
-  ;;       | viper-ESC-key | terminal  | quit | quit | ESC-      |
-  ;;       | map           | both      | quit | quit | quit      |
-  ;; - See also the function `viper-ESC-keyseq-timeout'.
-  ;; - For an updated function `event-apply-modifier' see
-  ;;   http://lists.gnu.org/archive/html/help-gnu-emacs/2018-07/msg00294.html
-  (define-key viper-insert-basic-map "\e" #'viper-change-state-to-vi)
-
+  (when v-s
+    ;; Quit `insert-state'.
+    ;; - As similar to `C-[' (ESC) as possible.
+    ;; - To insert a literal `[' use `C-q [' or when `\' is bound to
+    ;;   `viper-escape-to-emacs' alternatively `\['.
+    ;; - To examine the behavior in `insert-state' and to compare it with
+    ;;   `vi-state':
+    ;;   - Use the arrow keys (which are an ESC-sequence when in a terminal)
+    ;;     to move point in the minibuffer (or in a buffer), or to browse
+    ;;     the command history in the minibuffer.
+    ;;   - Use `ESC', `C-[' and `[' to quit `insert-state'.
+    ;; - See also the variable `viper-ESC-key' and the function
+    ;;   `viper-ESC-keyseq-timeout'.
+    (define-key viper-insert-basic-map "[" #'viper-change-state-to-vi)
+    ;; Escape to `emacs-state' like it is standard in `vi-state'. To insert
+    ;; a literal `\' use `C-q \' or `\\'.
+    (define-key viper-insert-basic-map "\\" #'viper-escape-to-emacs))
   (define-key viper-vi-global-user-map "gg" #'beginning-of-buffer)
   ;; Revert some Viper mode mappings.
   (dolist (key '(;; Keep `universal-argument'. Was `viper-scroll-down'. In
