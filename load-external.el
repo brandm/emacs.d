@@ -50,15 +50,6 @@
 When \"[[\": `[[' for Control and `[[[' for Meta or ESC (Meta or
 ESC via `[[-[' for `C-[' for ESC).")
 
-(defun f-event-apply-modifier-advice (event symbol lshiftby prefix)
-  "Fix C0 control character range of `event-apply-modifier'.
-See
-http://lists.gnu.org/archive/html/help-gnu-emacs/2018-07/msg00073.html
-http://lists.gnu.org/archive/html/help-gnu-emacs/2018-08/msg00077.html
-http://git.savannah.gnu.org/cgit/emacs.git/commit/lisp/simple.el?id=8c8bf7d"
-  (when (and (numberp event) (eq symbol 'control) (<= 64 (upcase event) 95))
-    (- (upcase event) 64)))
-
 (when (f-load-path-add v-f)
   (require 'key-chord)
   (setq-default key-chord-two-keys-delay 0.15 ; Default 0.1
@@ -67,10 +58,7 @@ http://git.savannah.gnu.org/cgit/emacs.git/commit/lisp/simple.el?id=8c8bf7d"
   (key-chord-define key-translation-map
                     v-key-chord-control #'event-apply-control-modifier)
   (key-chord-define-global
-   v-key-chord-control #'event-apply-control-modifier)
-  (when (version< emacs-version "27")
-    (advice-add
-     'event-apply-modifier :before-until #'f-event-apply-modifier-advice)))
+   v-key-chord-control #'event-apply-control-modifier))
 
 ;; * File config
 ;;   Local Variables:

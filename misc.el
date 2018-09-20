@@ -16,6 +16,19 @@
                                ("C-c s" event-apply-shift-modifier)))
   (define-key key-translation-map (kbd key) func))
 
+(defun f-event-apply-modifier-advice (event symbol lshiftby prefix)
+  "Fix C0 control character range of `event-apply-modifier'.
+See
+http://lists.gnu.org/archive/html/help-gnu-emacs/2018-07/msg00073.html
+http://lists.gnu.org/archive/html/help-gnu-emacs/2018-08/msg00077.html
+http://git.savannah.gnu.org/cgit/emacs.git/commit/lisp/simple.el?id=8c8bf7d"
+  (when (and (numberp event) (eq symbol 'control) (<= 64 (upcase event) 95))
+    (- (upcase event) 64)))
+
+(when (version< emacs-version "27")
+  (advice-add
+   'event-apply-modifier :before-until #'f-event-apply-modifier-advice))
+
 ;; ** Insert non-ASCII characters
 ;;    - Could also be:
 ;;      - A single loop that calls a macro that defines each function and
